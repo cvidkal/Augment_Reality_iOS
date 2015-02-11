@@ -109,7 +109,7 @@ bool drawMatcher(int &keypointSize, int &matchpointSize, Mat &matOutput, double 
         }
         else
         {
-            bool status = featureTrack.track(matOutput,CameraPose,IMUR,detectfps,matchfps,keypointSize);
+            bool status = featureTrack.track(matOutput,CameraPose,IMUR,detectfps,matchfps,keypointSize,markerIdx);
             return status;
             
 //            cout<<CameraPose<<endl;

@@ -9,6 +9,7 @@
 #include "Solve3D.h"
 
 //#include "5point.h"
+#include "levmar.h"
 
 
 Solve3D::~Solve3D()
@@ -68,11 +69,153 @@ bool Solve3D::Solve5Point(vector<Point2f> &pts1, vector<Point2f> &pts2, int num_
     return ret;
 }
 */
+
+
+void func2(double *p, double *hx, int m, int n, void *adata)
+{
+    int pointsnum = (int)(((double*)adata)[0]);
+    double * pts3d1 = ((double*)adata)+1;
+    double * pts3d2 = &((double*)adata)[pointsnum * 3 + 1];
+    double s = p[0];
+    Mat _r(3, 1, CV_32F);
+    _r.at<float>(0, 0) = p[1];
+    _r.at<float>(1, 0) = p[2];
+    _r.at<float>(2, 0) = p[3];
+    Mat R;
+    Rodrigues(_r, R);
+    
+    float *a = (float*)R.data;
+    
+    double r11 = a[0], r12 = a[1], r13 = a[2], r21 = a[3], r22 = a[4], r23 = a[5], r31 = a[6], r32 = a[7], r33 = a[8];
+    double t1 = p[4], t2 = p[5], t3 = p[6];
+    
+    
+    
+    for (int i = 0; i < pointsnum; i++)
+    {
+        double x, y, z;
+        double x1 = pts3d1[i * 3];
+        double x2 = pts3d1[i * 3 + 1];
+        double x3 = pts3d1[i * 3 + 2];
+        double y1 = pts3d2[i * 3];
+        double y2 = pts3d2[i * 3 + 1];
+        double y3 = pts3d2[i * 3 + 2];
+        x = t1 + r11*s*x1 + r12*s*x2 + r13*s*x3;
+        y = t2 + r21*s*x1 + r22*s*x2 + r23*s*x3;
+        z = t3 + r31*s*x1 + r32*s*x2 + r33*s*x3;
+        hx[3*i] = fabs(x - y1);
+        hx[3 * i + 1] = fabs(y - y2);
+        hx[3 * i + 2] = fabs(z - y3);
+        x = -(r11*(t1 - y1) + r21*(t2 - y2) + r31*(t3 - y3)) / s;
+        y = -(r12*(t1 - y1) + r22*(t2 - y2) + r32*(t3 - y3)) / s;
+        z = -(r13*(t1 - y1) + r23*(t2 - y2) + r33*(t3 - y3)) / s;
+        hx[3 * i] += fabs(x - x1);
+        hx[3 * i + 1] += fabs(y - x2);
+        hx[3 * i + 2] += fabs(z - x3);
+    }
+}
+
+void jacf(double *p, double *j, int m, int n, void *adata) /* function to evaluate the Jacobian \part x / \part p */
+{
+    int pointsnum = (int)(((double*)adata)[0]);
+    double * pts3d1 = (double*)adata + 1;
+    double * pts3d2 = &((double*)adata)[pointsnum * 3 + 1];
+    double s = p[0];
+    Mat _r(3,1,CV_32F), R, jac;
+    _r.at<float>(0, 0) = p[1];
+    _r.at<float>(1, 0) = p[2];
+    _r.at<float>(2, 0) = p[3];
+    Rodrigues(_r, R, jac);
+    float *r = (float*)R.data;
+    float r11 = r[0], r12 = r[1], r13 = r[2], r21 = r[3], r22 = r[4], r23 = r[5], r31 = r[6], r32 = r[7], r33 = r[8];
+    float t1 = p[4], t2 = p[5], t3 = p[6];
+    jac = jac.t();
+    float * jt = (float*)jac.data;
+    float j111 = jt[0], j112 = jt[1], j113 = jt[2],
+    j121 = jt[3], j122 = jt[4], j123 = jt[5],
+    j131 = jt[6], j132 = jt[7], j133 = jt[8],
+    j211 = jt[9], j212 = jt[10], j213 = jt[11],
+    j221 = jt[12], j222 = jt[13], j223 = jt[14],
+    j231 = jt[15], j232 = jt[16], j233 = jt[17],
+    j311 = jt[18], j312 = jt[19], j313 = jt[20],
+    j321 = jt[21], j322 = jt[22], j323 = jt[23],
+    j331 = jt[24], j332 = jt[25], j333 = jt[26];
+    for (int i = 0; i < pointsnum; i++)
+    {
+        float x1 = pts3d1[i * 3];
+        float x2 = pts3d1[i * 3 + 1];
+        float x3 = pts3d1[i * 3 + 2];
+        float y1 = pts3d2[i * 3];
+        float y2 = pts3d2[i * 3 + 1];
+        float y3 = pts3d2[i * 3 + 2];
+        j[i * 21] = r11*x1 - (r11*(t1 - y1) + r21*(t2 - y2) + r31*(t3 - y3)) / (s*s) + r12*x2 + r13*x3;
+        j[i * 21 + 1] = r21*x1 - (r12*(t1 - y1) + r22*(t2 - y2) + r32*(t3 - y3)) / (s*s) + r22*x2 + r23*x3;
+        j[i * 21 + 2] = r31*x1 - (r13*(t1 - y1) + r23*(t2 - y2) + r33*(t3 - y3)) / (s*s) + r32*x2 + r33*x3;
+        j[i * 21 + 3] = t1 + (j111*(t1 - y1) + j211*(t2 - y2) + j311*(t3 - y3)) / s + j111*s*x1 + j121*s*x2 + j131*s*x3;
+        j[i * 21 + 4] = t2 + (j121*(t1 - y1) + j221*(t2 - y2) + j321*(t3 - y3)) / s + j211*s*x1 + j221*s*x2 + r23*s*x3;
+        j[i * 21 + 5] = t3 + (j131*(t1 - y1) + j231*(t2 - y2) + j331*(t3 - y3)) / s + j311*s*x1 + j321*s*x2 + j331*s*x3;
+        j[i * 21 + 6] = t1 + (j112*(t1 - y1) + j212*(t2 - y2) + j312*(t3 - y3)) / s + j112*s*x1 + j122*s*x2 + j132*s*x3;
+        j[i * 21 + 7] = t2 + (j122*(t1 - y1) + j222*(t2 - y2) + j322*(t3 - y3)) / s + j212*s*x1 + j222*s*x2 + j232*s*x3;
+        j[i * 21 + 8] = t3 + (j132*(t1 - y1) + j232*(t2 - y2) + j332*(t3 - y3)) / s + j312*s*x1 + j322*s*x2 + j332*s*x3;
+        j[i * 21 + 9] = t1 + (j113*(t1 - y1) + j213*(t2 - y2) + j313*(t3 - y3)) / s + j113*s*x1 + j123*s*x2 + j133*s*x3;
+        j[i * 21 + 10] = t2 + (j123*(t1 - y1) + j223*(t2 - y2) + j323*(t3 - y3)) / s + j213*s*x1 + j223*s*x2 + j233*s*x3;
+        j[i * 21 + 11] = t3 + (j133*(t1 - y1) + j233*(t2 - y2) + j333*(t3 - y3)) / s + j313*s*x1 + j323*s*x2 + j333*s*x3;
+        j[i * 21 + 12] = r11 / s + 1;
+        j[i * 21 + 13] = r12 / s;
+        j[i * 21 + 14] = r13 / s;
+        j[i * 21 + 15] = r21 / s;
+        j[i * 21 + 16] = r22 / s + 1;
+        j[i * 21 + 17] = r23 / s;
+        j[i * 21 + 18] = r31 / s;
+        j[i * 21 + 19] = r32 / s;
+        j[i * 21 + 20] = r33 / s + 1;
+    }
+}
+
+void LM_SRT2(Mat pts3d1, Mat pts3d2, double&s, Mat&R, Mat &t)
+{
+    double p[13];
+    int n = pts3d1.rows;
+    p[0] = s;
+    Mat _rv;
+    Rodrigues(R, _rv);
+    for (int i = 0; i < 3; i++)
+    {
+        p[i + 1] = ((float*)_rv.data)[i];
+    }
+    p[4] = t.at<float>(0, 0);
+    p[5] = t.at<float>(1, 0);
+    p[6] = t.at<float>(2, 0);
+    double * adata = new double[n * 3 * 2 + 1];
+    adata[0] = n;
+    for (int i = 0; i < n; i++)
+    {
+        adata[i * 3 + 1] = pts3d1.at<float>(i, 0);
+        adata[i * 3 + 2] = pts3d1.at<float>(i, 1);
+        adata[i * 3 + 3] = pts3d1.at<float>(i, 2);
+        adata[i * 3 + n * 3 + 1] = pts3d2.at<float>(i, 0);
+        adata[i * 3 + n * 3 + 2] = pts3d2.at<float>(i, 1);
+        adata[i * 3 + n * 3 + 3] = pts3d2.at<float>(i, 2);
+    }
+    int q = dlevmar_der(func2,jacf,p, NULL, 7, n*3, 100, NULL, NULL, NULL, NULL, adata);
+    s = p[0];
+    _rv.at<float>(0, 0) = p[1];
+    _rv.at<float>(1, 0) = p[2];
+    _rv.at<float>(2, 0) = p[3];
+    Rodrigues(_rv, R);
+    
+    t.at<float>(0, 0) = p[4];
+    t.at<float>(1, 0) = p[5];
+    t.at<float>(2, 0) = p[6];
+}
+
+
+
+
 void Solve3D::solveSRT(Mat &pts3d1, Mat &pts3d2, double &s, Mat &R, Mat &t)
 {
     Scalar_<float> a = mean(pts3d1);
     Scalar_<float> b = mean(pts3d2);
-    cout << a << b << endl;
     Mat ux(3, 1, CV_32F);
     Mat uy(3, 1, CV_32F);
     for (int i = 0; i < 3; i++)
@@ -80,7 +223,6 @@ void Solve3D::solveSRT(Mat &pts3d1, Mat &pts3d2, double &s, Mat &R, Mat &t)
         ux.at<float>(i, 0) = a[i];
         uy.at<float>(i, 0) = b[i];
     }
-    cout << ux << uy << endl;
     Mat cov = Mat::zeros(3, 3, CV_32F);
     pts3d1 = pts3d1.reshape(1);//N*3
     pts3d2 = pts3d2.reshape(1);
@@ -110,6 +252,8 @@ void Solve3D::solveSRT(Mat &pts3d1, Mat &pts3d2, double &s, Mat &R, Mat &t)
     }
     s = tr / (vx / pts3d1.rows);
     t = uy - (s*R*ux);
+    LM_SRT2(pts3d1, pts3d2, s, R, t);
+
 }
 
 void Solve3D::transformSRT(const vector<Point3f> &pts3d1,vector<Point3f> &pts3d2,double s,Mat R,Mat t)
@@ -140,18 +284,7 @@ void Solve3D::setKMatrix(Mat &KMatrix,double imageWidth, double imageHeight, dou
 
 Mat Solve3D::setRotationMatrix(const CMRotationMatrix &rotation)
 {
-    /*
-    rotationMatrix.at<double>(0, 0) = -rotation.m11;
-    rotationMatrix.at<double>(0, 1) = -rotation.m21;
-    rotationMatrix.at<double>(0, 2) = -rotation.m31;
-    
-    rotationMatrix.at<double>(1, 0) = rotation.m12;
-    rotationMatrix.at<double>(1, 1) = rotation.m22;
-    rotationMatrix.at<double>(1, 2) = rotation.m32;
-    
-    rotationMatrix.at<double>(2, 0) = rotation.m13;
-    rotationMatrix.at<double>(2, 1) = rotation.m23;
-    rotationMatrix.at<double>(2, 2) = rotation.m33;*/
+
     Mat rotationMatrix(3,3,CV_32F);
     rotationMatrix.at<float>(0, 0) = -rotation.m12;
     rotationMatrix.at<float>(0, 1) = -rotation.m22;
@@ -167,13 +300,6 @@ Mat Solve3D::setRotationMatrix(const CMRotationMatrix &rotation)
     return rotationMatrix;
     
 
-//    //rotationMatrix = rr * rotationMatrix;
-//    
-//    //rotationMatrix = rotationMatrix.t();
-//    
-//    rotationMatrix.row(2) = rotationMatrix.row(2);
-//    
-//    cout<<"rotation:   "<<rotationMatrix<<endl;
 }
 
 
@@ -230,6 +356,38 @@ void Solve3D::get3DPoints(Mat KMatrix,Mat rotationMatrix,vector<KeyPoint> &pts2D
 }
 
 
+void Solve3D::get3DPoints(Mat KMatrix,const Mat rotationMatrix,const Mat TVector,const vector<KeyPoint> &pts2D,vector<Point3f> &pts3D)
+{
+    double height = TVector.at<float>(2,0);
+
+    pts3D.clear();
+    cv::Point3d point3D;
+    Mat imageCoordinate = Mat::Mat(3, 1, CV_32F);
+    Mat realCoordinate;
+    Mat minusK, minusR;
+    invert(KMatrix, minusK, CV_SVD);
+    invert(rotationMatrix, minusR, CV_SVD);
+    
+    for (int i = 0; i < pts2D.size(); i++)
+    {
+        imageCoordinate.at<float>(2, 0) = 1;
+        float realHeight = height, realScale = 1;
+        
+        imageCoordinate.at<float>(0, 0) = pts2D[i].pt.x;
+        imageCoordinate.at<float>(1, 0) = pts2D[i].pt.y;
+        
+        Mat right = minusR * minusK * imageCoordinate;
+        realScale = -realHeight / right.at<float>(2, 0);
+        
+        point3D.x = right.at<float>(0, 0) * realScale;//+ offset.x;
+        point3D.y = right.at<float>(1, 0) * realScale;//+ offset.y;
+        point3D.z = right.at<float>(2, 0) * realScale + height;
+        pts3D.push_back(point3D);
+    }
+    
+}
+
+
 Mat Solve3D::getNextInvertMatrix(Mat KMatrix,Mat R,Mat t)
 {
     Mat converseMatrix;
@@ -242,7 +400,6 @@ Mat Solve3D::getNextInvertMatrix(Mat KMatrix,Mat R,Mat t)
         }
         P.at<float>(i, 3) = (float)t.at<float>(i);
     }
-    cout<< P<<endl;
     return converseMatrix = KMatrix * P;
 //    invert(converseMatrix, invertMatrix, CV_SVD);
     
@@ -253,7 +410,7 @@ Mat Solve3D::getNextInvertMatrix(Mat KMatrix,Mat R,Mat t)
 void Solve3D::get2DPoint(Mat KMatrix,Mat R,Mat t,vector<Point3f> &points3DVector,vector<Point2f> &points2DVector,Mat &drawMatch)
 {
     Mat converseMatrix = getNextInvertMatrix(KMatrix, R, t);
-    cout<<converseMatrix<<endl;
+
     for(int i= 0; i<points3DVector.size();i++)
     {
         Mat realCoordinate = Mat(4, 1, CV_32F);
@@ -305,11 +462,9 @@ void Solve3D::getCameraRT(Mat KMatrix,Mat P3D,Mat P2D,Mat &R,Mat &t)
     tm.start();
     solvePnPRansac(P3D, P2D, KMatrix, dtmp, R, temp , false);
     tm.stop();
- //   cout<<"------"<<1/tm.getTimeSec();
     R.convertTo(rvec,CV_32F);
     temp.convertTo(t, CV_32F);
     Rodrigues(rvec,R);
-    
 }
 
 

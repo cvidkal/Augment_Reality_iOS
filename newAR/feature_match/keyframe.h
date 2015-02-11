@@ -18,6 +18,7 @@ public:
 //	vector<Point3d> pointSet3D;
 	vector<pair<int, int>> indices;//(-1,-1) means a invalid index
 	vector<KeyPoint> keyPoints;
+    vector<Point2f> pts2D;
     vector<Point3f> pts3D;
 	
 private:

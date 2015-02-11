@@ -14,7 +14,7 @@ public:
     Feature_Track(){};
 	void setKMatrix(double imageWidth, double imageHeight, double focus);//init the K
 	void match(Mat query, Matches &matches, double &detectfps, double &matchfps);
-    bool track(Mat &frame,Mat & C_GL,Mat RIMU,double &detectfps,double &matchfps,int &keypointSize);
+    bool track(Mat &frame,Mat & C_GL,Mat RIMU,double &detectfps,double &matchfps,int &keypointSize,int &keyframes);
 	void setRef(Mat ref,int markerNum,Mat R);
     void addMarker(Mat frame,Mat R);
     ~Feature_Track(){};
@@ -23,7 +23,7 @@ public:
 
 private:
     bool isKeyFrame(Mat R,Mat t);
-    int searchKeyFrame(Mat R,Mat t);
+    int searchKeyFrame(int currentNumber,Mat R,Mat t);
 	Mat KMatrix;
     bool isSet = false;
 	vector<Keyframe> keyframes;

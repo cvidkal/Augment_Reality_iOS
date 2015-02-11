@@ -101,8 +101,6 @@ static double machTimeToSecs(uint64_t time)
         glMatrixMode(GL_MODELVIEW);
         glLoadMatrixf((GLfloat *)m);
         
-        
-        cout<<"camera: "<<tmp<<endl;
     }
     
     // glTranslatef(0, 0, -9);

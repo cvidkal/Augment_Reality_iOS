@@ -18,6 +18,7 @@ public:
     static Mat setRotationMatrix(const CMRotationMatrix &rotation);//init the R
 	void setTVector(const Mat& _TVector);
     static void get3DPoints(Mat KMatrix, Mat rotationMatrix, vector<KeyPoint> &pts2D, vector<Point3f> &pts3D, Mat &TVector);
+    static void get3DPoints(Mat KMatrix,const Mat rotationMatrix,const Mat TVector,const vector<KeyPoint> &pts2D,vector<Point3f> &pts3D);
 	void getinvertMatrix();//get (KR)^-1
     static Mat getNextInvertMatrix(Mat KMatrix,Mat R,Mat t);
 	Point3d getNext3DPoint(int i);

@@ -1,4 +1,7 @@
 #include "Feature_Track.h"
+#include <fstream>
+
+ofstream fout("t.txt");
 
 
 Ptr<FeatureDetector> Feature_Track::create_detector(string feature)
@@ -146,7 +149,6 @@ void Feature_Track::setRef(Mat ref,int markerNum,Mat R)
     Mat _R,_t;
     Mat _pts3d1(pts3d1),_pts3d2(pts3d2);
     Solve3D::solveSRT(_pts3d1, _pts3d2, s, _R, _t);
-    cout<<s<<_R<<_t<<endl;
     Solve3D::transformSRT(markers[markerNum].points3D2, markers[markerNum].points3D1, s, _R, _t);
     markers[markerNum].registed = true;
 
@@ -178,19 +180,30 @@ void Feature_Track::match(Mat query, Matches &matches, double &detectfps, double
 
 bool Feature_Track::isKeyFrame(Mat R,Mat t)
 {
-    double minDist = 1.1*1.1;
+    double threshold = 0.6*0.6;
+    double minDist = 10000000;
+    vector<double> dists;
     for(int i =0;i<keyframes.size();i++)
     {
-        if(norm(t-keyframes[i].t,NORM_L2SQR)<minDist)
+        double dist = norm(t-keyframes[i].t,NORM_L2SQR);
+        if(dist<minDist)
+        {
+            minDist = dist;
+        }
+        dists.push_back(dist);
+        if(dist<threshold)
         {
             return false;
         }
     }
+    cout<<minDist<<endl;
+    cout<<t-keyframes[keyframes.size()-1].t<<endl;
     return true;
 }
 
-int Feature_Track::searchKeyFrame(Mat R,Mat t)
+int Feature_Track::searchKeyFrame(int currentNumber,Mat R,Mat t)
 {
+    /*
     double minDist1 = -1,minDist2=-1;
     int mini1,mini2;
     
@@ -208,6 +221,9 @@ int Feature_Track::searchKeyFrame(Mat R,Mat t)
             std::swap(mini1, mini2);
         }
     }
+    cout<< mini1<<" "<<mini2<<endl;
+    cout<<minDist1<<" "<<minDist2<<endl;
+
     if(minDist1<minDist2*0.6)
     {
         return mini1;
@@ -216,6 +232,29 @@ int Feature_Track::searchKeyFrame(Mat R,Mat t)
     {
         return -1;
     }
+     */
+    double minDist = -1;
+    int mini;
+    vector<double> dists;
+    for(int i=0;i<keyframes.size();i++)
+    {
+        double dist = norm(t-keyframes[i].t,NORM_L2SQR);
+        dists.push_back(dist);
+        if(dist<minDist||minDist == -1)
+        {
+            minDist = dist;
+            mini = i;
+        }
+    }
+    if(mini != currentNumber)
+    {
+        cout<<minDist<<"--"<<dists[currentNumber]<<endl;
+        if(minDist<dists[currentNumber]*0.6)
+        {
+            return mini;
+        }
+    }
+    return currentNumber;
 }
 
 void Feature_Track::addMarker(Mat frame,Mat R)
@@ -229,13 +268,15 @@ void Feature_Track::addMarker(Mat frame,Mat R)
 }
 
 
-bool Feature_Track::track(Mat &frame,Mat & C_GL,Mat RIMU,double &detectfps,double &matchfps,int &keypointSize)
+bool Feature_Track::track(Mat &frame,Mat & C_GL,Mat RIMU,double &detectfps,double &matchfps,int &keypointSize,int & keyframeCnt)
 {
     if(!isTracked)
     {
  //       keyFrameNumber = searchKeyFrame(RIMU, t)
         
     }
+    
+    keyframeCnt = keyFrameNumber;
     TickMeter tm;
 	Keyframe tmp;
     tm.start();
@@ -251,30 +292,50 @@ bool Feature_Track::track(Mat &frame,Mat & C_GL,Mat RIMU,double &detectfps,doubl
     matchfps = 1/tm.getTimeSec();
     Mat pts3D, pts2D;
     vector<Point3f> pts3d;vector<Point2f> pts2d;
+    vector<Point2f> pts2dt;
     for (int i = 0; i < dmatches.size(); i++)
 	{
 		if ((dmatches[i][0].distance < dmatches[i][1].distance*0.6) && dmatches[i][0].distance < 90)
 		{
             pts3d.push_back(keyframes[keyFrameNumber].pts3D[dmatches[i][0].trainIdx]);
             pts2d.push_back(tmp.keyPoints[dmatches[i][0].queryIdx].pt);
+            pts2dt.push_back(keyframes[keyFrameNumber].keyPoints[dmatches[i][0].trainIdx].pt);
+
+		}
+	}
+    Mat inliers;
+    findFundamentalMat(pts2d, pts2dt,inliers);
+    for(int i=0;i<pts2d.size();i++)
+    {
+        if(inliers.at<char>(i,0))
+        {
             Mat temp =Mat(keyframes[keyFrameNumber].pts3D[dmatches[i][0].trainIdx]);
             temp = temp.t();
             pts3D.push_back(temp);
             temp =Mat(tmp.keyPoints[dmatches[i][0].queryIdx].pt);
             temp = temp.t();
             pts2D.push_back(temp);
-		}
-	}
+        }
+    }
+    
     keypointSize = pts3D.rows;
-    if(pts3D.rows<15)
+    cout<<keyFrameNumber<<endl;
+    if(pts3D.rows<20)
     {
         isTracked = false;
         return false;
     }
+    
     Solve3D::getCameraRT(KMatrix, pts3D, pts2D, tmp.R, tmp.t);
-    if (isKeyFrame(tmp.R, tmp.t)||pts3D.rows<30) {
-        Solve3D::get3DPoints(KMatrix, tmp.R, tmp.keyPoints, tmp.pts3D, tmp.t);
+    
+    cout<<tmp.t <<endl;
+
+    if (isKeyFrame(tmp.R, tmp.t))
+    {
+        Solve3D::get3DPoints(KMatrix, tmp.R, tmp.t, tmp.keyPoints,tmp.pts3D);
+        cout<<tmp.t<<endl;
         keyframes.push_back(tmp);
+//        cout<<"keyframes numbers"<<keyframes.size()<<endl;
     }
  
 //    double lowx, lowy, highx, highy;
@@ -282,11 +343,11 @@ bool Feature_Track::track(Mat &frame,Mat & C_GL,Mat RIMU,double &detectfps,doubl
 //    Solve3D::printPlane(KMatrix, tmp.R, tmp.t, frame, lowx, lowy, highx, highy);
     
     C_GL = Solve3D::getP(tmp.R, tmp.t);
-    int q = searchKeyFrame(tmp.R, tmp.t);
-    if(q>0)
-    {
-        keyFrameNumber = q;
-    }
+    keyFrameNumber = searchKeyFrame(keyFrameNumber, tmp.R, tmp.t);
+//    if(q>=0)
+//    {
+ //       keyFrameNumber = q;
+ //   }
     isTracked = true;
     return true;
 }

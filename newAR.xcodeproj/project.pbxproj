@@ -32,6 +32,13 @@
 		367292441A2F2B46005C058E /* Feature_Track.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 367292421A2F2B46005C058E /* Feature_Track.cpp */; };
 		36B346551A1C39F000DD6F88 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36B346541A1C39F000DD6F88 /* CoreMotion.framework */; };
 		4D5DAE771A8B19D100F33048 /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D5DAE761A8B19D100F33048 /* opencv2.framework */; };
+		4D5DAE8E1A8B24BF00F33048 /* Axb.c in Sources */ = {isa = PBXBuildFile; fileRef = 4D5DAE7B1A8B24BF00F33048 /* Axb.c */; };
+		4D5DAE911A8B24BF00F33048 /* lm.c in Sources */ = {isa = PBXBuildFile; fileRef = 4D5DAE801A8B24BF00F33048 /* lm.c */; };
+		4D5DAE931A8B24BF00F33048 /* lmbc.c in Sources */ = {isa = PBXBuildFile; fileRef = 4D5DAE831A8B24BF00F33048 /* lmbc.c */; };
+		4D5DAE951A8B24BF00F33048 /* lmblec.c in Sources */ = {isa = PBXBuildFile; fileRef = 4D5DAE851A8B24BF00F33048 /* lmblec.c */; };
+		4D5DAE971A8B24BF00F33048 /* lmbleic.c in Sources */ = {isa = PBXBuildFile; fileRef = 4D5DAE871A8B24BF00F33048 /* lmbleic.c */; };
+		4D5DAE991A8B24BF00F33048 /* lmlec.c in Sources */ = {isa = PBXBuildFile; fileRef = 4D5DAE891A8B24BF00F33048 /* lmlec.c */; };
+		4D5DAE9B1A8B24BF00F33048 /* misc.c in Sources */ = {isa = PBXBuildFile; fileRef = 4D5DAE8B1A8B24BF00F33048 /* misc.c */; };
 		4D8F45AD1A79F91C00A218D0 /* Marker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D8F45AC1A79F91C00A218D0 /* Marker.cpp */; };
 		4D8F45B01A7A546D00A218D0 /* Visualizer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4D8F45AF1A7A546D00A218D0 /* Visualizer.mm */; };
 		4D8F45B21A7A59DB00A218D0 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D8F45B11A7A59DB00A218D0 /* GLKit.framework */; };
@@ -89,6 +96,17 @@
 		367292431A2F2B46005C058E /* Feature_Track.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Feature_Track.h; sourceTree = "<group>"; };
 		36B346541A1C39F000DD6F88 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		4D5DAE761A8B19D100F33048 /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = opencv2.framework; path = "../../Desktop/findmarker副本/opencv2.framework"; sourceTree = "<group>"; };
+		4D5DAE7B1A8B24BF00F33048 /* Axb.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = Axb.c; path = feature_match/levmar/Axb.c; sourceTree = "<group>"; };
+		4D5DAE7C1A8B24BF00F33048 /* compiler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = compiler.h; path = feature_match/levmar/compiler.h; sourceTree = "<group>"; };
+		4D5DAE7E1A8B24BF00F33048 /* levmar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = levmar.h; path = feature_match/levmar/levmar.h; sourceTree = "<group>"; };
+		4D5DAE801A8B24BF00F33048 /* lm.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lm.c; path = feature_match/levmar/lm.c; sourceTree = "<group>"; };
+		4D5DAE811A8B24BF00F33048 /* lm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lm.h; path = feature_match/levmar/lm.h; sourceTree = "<group>"; };
+		4D5DAE831A8B24BF00F33048 /* lmbc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lmbc.c; path = feature_match/levmar/lmbc.c; sourceTree = "<group>"; };
+		4D5DAE851A8B24BF00F33048 /* lmblec.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lmblec.c; path = feature_match/levmar/lmblec.c; sourceTree = "<group>"; };
+		4D5DAE871A8B24BF00F33048 /* lmbleic.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lmbleic.c; path = feature_match/levmar/lmbleic.c; sourceTree = "<group>"; };
+		4D5DAE891A8B24BF00F33048 /* lmlec.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lmlec.c; path = feature_match/levmar/lmlec.c; sourceTree = "<group>"; };
+		4D5DAE8B1A8B24BF00F33048 /* misc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = misc.c; path = feature_match/levmar/misc.c; sourceTree = "<group>"; };
+		4D5DAE8C1A8B24BF00F33048 /* misc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = misc.h; path = feature_match/levmar/misc.h; sourceTree = "<group>"; };
 		4D8F45AB1A79F8F300A218D0 /* Marker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Marker.h; sourceTree = "<group>"; };
 		4D8F45AC1A79F91C00A218D0 /* Marker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Marker.cpp; sourceTree = "<group>"; };
 		4D8F45AE1A7A546D00A218D0 /* Visualizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Visualizer.h; sourceTree = "<group>"; };
@@ -184,6 +202,7 @@
 		3616F1BB1A19E5DB005EF6D3 /* newAR */ = {
 			isa = PBXGroup;
 			children = (
+				4D5DAE791A8B24AD00F33048 /* levmar */,
 				4D8F45AE1A7A546D00A218D0 /* Visualizer.h */,
 				4D8F45AF1A7A546D00A218D0 /* Visualizer.mm */,
 				361528F51A208D1F00AEA4E7 /* IOS_related */,
@@ -247,6 +266,24 @@
 				4D8F45AC1A79F91C00A218D0 /* Marker.cpp */,
 			);
 			path = feature_match;
+			sourceTree = "<group>";
+		};
+		4D5DAE791A8B24AD00F33048 /* levmar */ = {
+			isa = PBXGroup;
+			children = (
+				4D5DAE7B1A8B24BF00F33048 /* Axb.c */,
+				4D5DAE7C1A8B24BF00F33048 /* compiler.h */,
+				4D5DAE7E1A8B24BF00F33048 /* levmar.h */,
+				4D5DAE801A8B24BF00F33048 /* lm.c */,
+				4D5DAE811A8B24BF00F33048 /* lm.h */,
+				4D5DAE831A8B24BF00F33048 /* lmbc.c */,
+				4D5DAE851A8B24BF00F33048 /* lmblec.c */,
+				4D5DAE871A8B24BF00F33048 /* lmbleic.c */,
+				4D5DAE891A8B24BF00F33048 /* lmlec.c */,
+				4D5DAE8B1A8B24BF00F33048 /* misc.c */,
+				4D5DAE8C1A8B24BF00F33048 /* misc.h */,
+			);
+			name = levmar;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -350,14 +387,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4D5DAE951A8B24BF00F33048 /* lmblec.c in Sources */,
 				4DAEF42C1A63B4B4000E91D7 /* hierarchical k-means.cpp in Sources */,
+				4D5DAE991A8B24BF00F33048 /* lmlec.c in Sources */,
 				362AE7D61A1EE75900B9EED7 /* Feature_Match.cpp in Sources */,
 				361528FA1A208D5600AEA4E7 /* ViewController.mm in Sources */,
+				4D5DAE9B1A8B24BF00F33048 /* misc.c in Sources */,
 				361528FD1A208DBE00AEA4E7 /* DrawImage.cpp in Sources */,
 				4DAEF42F1A63B4C9000E91D7 /* vocabulary tree.cpp in Sources */,
+				4D5DAE931A8B24BF00F33048 /* lmbc.c in Sources */,
 				4D8F45AD1A79F91C00A218D0 /* Marker.cpp in Sources */,
+				4D5DAE911A8B24BF00F33048 /* lm.c in Sources */,
+				4D5DAE971A8B24BF00F33048 /* lmbleic.c in Sources */,
 				4DA975361A7915140097F4F4 /* keyframe.cpp in Sources */,
 				3616F1C21A19E5DB005EF6D3 /* AppDelegate.m in Sources */,
+				4D5DAE8E1A8B24BF00F33048 /* Axb.c in Sources */,
 				367292441A2F2B46005C058E /* Feature_Track.cpp in Sources */,
 				4DA975391A79E8E10097F4F4 /* Solve3D.cpp in Sources */,
 				3616F1BF1A19E5DB005EF6D3 /* main.m in Sources */,
