@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>6709003E-401A-46A0-BD85-78997D33DA83</string>
+	<key>IDESourceControlProjectName</key>
+	<string>newAR</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>2E70A482-8D0B-4EDF-B65A-82518F7862FA</key>
+		<string>https://github.com/cvidkal/Augment_Reality_iOS.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>newAR.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>2E70A482-8D0B-4EDF-B65A-82518F7862FA</key>
+		<string>../..</string>
+		<key>C0A9BBE2-D317-475D-8EE6-11D0989BC3EB</key>
+		<string>../../../findmarker副本</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/cvidkal/Augment_Reality_iOS.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>2E70A482-8D0B-4EDF-B65A-82518F7862FA</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>2E70A482-8D0B-4EDF-B65A-82518F7862FA</string>
+			<key>IDESourceControlWCCName</key>
+			<string>change_draw</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>C0A9BBE2-D317-475D-8EE6-11D0989BC3EB</string>
+			<key>IDESourceControlWCCName</key>
+			<string>findmarker副本</string>
+		</dict>
+	</array>
+</dict>
+</plist>

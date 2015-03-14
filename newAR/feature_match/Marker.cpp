@@ -14,9 +14,6 @@ Marker::Marker()
     registed = false;
 }
 
-Marker::~Marker()
-{
-}
 
 Point3f Marker::getPoint3D(int i)
 {

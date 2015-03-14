@@ -174,7 +174,7 @@ void jacf(double *p, double *j, int m, int n, void *adata) /* function to evalua
 
 void LM_SRT2(Mat pts3d1, Mat pts3d2, double&s, Mat&R, Mat &t)
 {
-    double p[13];
+    double p[7];
     int n = pts3d1.rows;
     p[0] = s;
     Mat _rv;
@@ -209,13 +209,80 @@ void LM_SRT2(Mat pts3d1, Mat pts3d2, double&s, Mat&R, Mat &t)
     t.at<float>(2, 0) = p[6];
 }
 
-
-
-
-void Solve3D::solveSRT(Mat &pts3d1, Mat &pts3d2, double &s, Mat &R, Mat &t)
+void func(double *p, double *hx, int m, int n, void *adata)
 {
-    Scalar_<float> a = mean(pts3d1);
-    Scalar_<float> b = mean(pts3d2);
+    int pointsnum = (int)(((double*)adata)[0]);
+    double * pts3d1 = (double*)adata + 1;
+    double * pts3d2 = &((double*)adata)[pointsnum * 3 + 1];
+    double s = p[0];
+    double r11 = p[1], r12 = p[2], r13 = p[3], r21 = p[4], r22 = p[5], r23 = p[6], r31 = p[7], r32 = p[8], r33 = p[9];
+    double t1 = p[10], t2 = p[11], t3 = p[12];
+    
+    for (int i = 0; i < pointsnum; i++)
+    {
+        double x, y, z;
+        double x1 = pts3d1[i * 3];
+        double x2 = pts3d1[i * 3 + 1];
+        double x3 = pts3d1[i * 3 + 2];
+        double y1 = pts3d2[i * 3];
+        double y2 = pts3d2[i * 3 + 1];
+        double y3 = pts3d2[i * 3 + 2];
+        x = t1 + r11*s*x1 + r12*s*x2 + r13*s*x3;
+        y = t2 + r21*s*x1 + r22*s*x2 + r23*s*x3;
+        z = t3 + r31*s*x1 + r32*s*x2 + r33*s*x3;
+        hx[3 * i] = fabs(x - y1);
+        hx[3 * i + 1] = fabs(y - y2);
+        hx[3 * i + 2] = fabs(z - y3);
+        x = -(r11*(t1 - y1) + r21*(t2 - y2) + r31*(t3 - y3)) / s;
+        y = -(r12*(t1 - y1) + r22*(t2 - y2) + r32*(t3 - y3)) / s;
+        z = -(r13*(t1 - y1) + r23*(t2 - y2) + r33*(t3 - y3)) / s;
+        hx[3 * i] += fabs(x - x1);
+        hx[3 * i + 1] += fabs(y - x2);
+        hx[3 * i + 2] += fabs(z - x3);
+    }
+}
+
+void LM_SRT(Mat pts3d1, Mat pts3d2, double &s, Mat &R, Mat &t)
+{
+    double p[7];
+    int n = pts3d1.rows;
+    p[0] = s;
+    Mat _rv;
+    Rodrigues(R, _rv);
+    for (int i = 0; i < 3; i++)
+    {
+        p[i + 1] = ((float*)_rv.data)[i];
+    }
+    p[4] = t.at<float>(0, 0);
+    p[5] = t.at<float>(1, 0);
+    p[6] = t.at<float>(2, 0);
+    double * adata = new double[n * 3 * 2 + 1];
+    adata[0] = n;
+    for (int i = 0; i < n; i++)
+    {
+        adata[i * 3 + 1] = pts3d1.at<float>(i, 0);
+        adata[i * 3 + 2] = pts3d1.at<float>(i, 1);
+        adata[i * 3 + 3] = pts3d1.at<float>(i, 2);
+        adata[i * 3 + n * 3 + 1] = pts3d2.at<float>(i, 0);
+        adata[i * 3 + n * 3 + 2] = pts3d2.at<float>(i, 1);
+        adata[i * 3 + n * 3 + 3] = pts3d2.at<float>(i, 2);
+    }
+    int a = dlevmar_dif(func2, p, NULL, 7, n * 3, 100, NULL, NULL, NULL, NULL, adata);
+    s = p[0];
+    _rv.at<float>(0, 0) = p[1];
+    _rv.at<float>(1, 0) = p[2];
+    _rv.at<float>(2, 0) = p[3];
+    Rodrigues(_rv, R);
+    
+    t.at<float>(0, 0) = p[4];
+    t.at<float>(1, 0) = p[5];
+    t.at<float>(2, 0) = p[6];
+}
+
+void Solve3D::solveSRT(Mat &src, Mat &dst, double &s, Mat &R, Mat &t)
+{
+    Scalar_<float> a = mean(src);
+    Scalar_<float> b = mean(dst);
     Mat ux(3, 1, CV_32F);
     Mat uy(3, 1, CV_32F);
     for (int i = 0; i < 3; i++)
@@ -224,13 +291,13 @@ void Solve3D::solveSRT(Mat &pts3d1, Mat &pts3d2, double &s, Mat &R, Mat &t)
         uy.at<float>(i, 0) = b[i];
     }
     Mat cov = Mat::zeros(3, 3, CV_32F);
-    pts3d1 = pts3d1.reshape(1);//N*3
-    pts3d2 = pts3d2.reshape(1);
-    for (int i = 0; i < pts3d1.rows; i++)
+    src = src.reshape(1);//N*3
+    dst = dst.reshape(1);
+    for (int i = 0; i < src.rows; i++)
     {
-        cov +=(pts3d2.row(i).t() - uy)*(pts3d1.row(i).t() - ux).t();
+        cov += (dst.row(i).t() - uy)*(src.row(i).t() - ux).t();
     }
-    cov = cov / pts3d1.rows;
+    cov = cov / src.rows;
     Mat S = Mat::eye(3, 3, CV_32F);
     
     SVD svd = SVD(cov, SVD::FULL_UV);
@@ -246,15 +313,17 @@ void Solve3D::solveSRT(Mat &pts3d1, Mat &pts3d2, double &s, Mat &R, Mat &t)
     {
         tr += c[i] * S.at<float>(i, i);
     }
-    for (int i = 0; i < pts3d1.rows; i++)
+    for (int i = 0; i < src.rows; i++)
     {
-        vx += norm(pts3d1.row(i).t() - ux, NORM_L2SQR);
+        vx += norm(src.row(i).t() - ux, NORM_L2SQR);
     }
-    s = tr / (vx / pts3d1.rows);
+    s = tr / (vx / src.rows);
     t = uy - (s*R*ux);
-    LM_SRT2(pts3d1, pts3d2, s, R, t);
-
+    
+    LM_SRT2(src, dst, s, R, t);
 }
+
+
 
 void Solve3D::transformSRT(const vector<Point3f> &pts3d1,vector<Point3f> &pts3d2,double s,Mat R,Mat t)
 {
@@ -298,8 +367,6 @@ Mat Solve3D::setRotationMatrix(const CMRotationMatrix &rotation)
     rotationMatrix.at<float>(2, 1) = -rotation.m23;
     rotationMatrix.at<float>(2, 2) = -rotation.m33;
     return rotationMatrix;
-    
-
 }
 
 

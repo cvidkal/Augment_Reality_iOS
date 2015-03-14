@@ -24,15 +24,13 @@ public:
 	
 
 	void matchNimages(Mat image, int n,vector<Matches> &matches,int &keyPointSize, vector<int> &matchPointSize, double &detectfps, double &matchfps);
-	vector<Matches> matchNimages(Mat image, int n)
-	{
-        vector<Matches> matches;
-		int a;
-		vector<int> b;
-		double c, d;
-		matchNimages(image, n, matches, a, b, c, d);
-        return matches;
-	}
+    void matchNimages(Mat image, int n,vector<Matches> &matches)
+    {
+        int a;
+        vector<int> b;
+        double c, d;
+        matchNimages(image, n, matches, a, b, c, d);
+    }
 
 	Ptr<FeatureDetector> getDetector(){ return detector;}
 	Ptr<DescriptorExtractor> getExtractor(){ return extractor; }

@@ -98,19 +98,21 @@ bool drawMatcher(int &keypointSize, int &matchpointSize, Mat &matOutput, double 
                 else
                 {
                     featureTrack.setKMatrix(480, 360, focus);
-                    featureTrack.setRef(ref,markerNums[0],IMUR);
-                    featureTrack.match(matOutput, matches,detectfps,matchfps);
-                    if(matches.count < 20)
-                        backgroundIsRun = NO;
-                    else
+                    if(featureTrack.setCS(matOutput, ref, markerNums, IMUR))
+                    {
                         isMatched = YES;
+
+                    }
+                    else
+                        backgroundIsRun = NO;
+
+//                    featureTrack.setRef(ref,markerNums[0],IMUR);
                 }
             }
         }
         else
         {
-            bool status = featureTrack.track(matOutput,CameraPose,IMUR,detectfps,matchfps,keypointSize,markerIdx);
-            return status;
+            bool status = featureTrack.track(matOutput,CameraPose,detectfps,matchfps,keypointSize,markerIdx,featureMatch);
             
 //            cout<<CameraPose<<endl;
 //            featureTrack.match(matOutput, matches,detectfps,matchfps);
@@ -118,6 +120,10 @@ bool drawMatcher(int &keypointSize, int &matchpointSize, Mat &matOutput, double 
             {
                 isMatched = NO;
                 backgroundIsRun = NO;
+            }
+            else
+            {
+                return true;
             }
             /*
             if(matches.count > 30)

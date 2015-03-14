@@ -17,13 +17,15 @@ public:
     Marker();
     Marker(vector<Point3f> _points3D);
     Point3f getPoint3D(int i);
-    ~Marker();
+    ~Marker(){};
     vector<Point3f> points3D1;
     vector<Point3f> points3D2;
     bool registed;
     Mat descriptor;
     vector<KeyPoint> pts2d;
+    vector<vector<pair<int, int>>> invertIdx;
     Point3f center;
+    Mat img;
 private:
 };
 
