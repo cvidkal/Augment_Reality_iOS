@@ -18,6 +18,7 @@ public:
     Marker(vector<Point3f> _points3D);
     Point3f getPoint3D(int i);
     ~Marker(){};
+    void reset();
     vector<Point3f> points3D1;
     vector<Point3f> points3D2;
     bool registed;

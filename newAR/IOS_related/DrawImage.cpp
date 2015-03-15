@@ -120,6 +120,10 @@ bool drawMatcher(int &keypointSize, int &matchpointSize, Mat &matOutput, double 
             {
                 isMatched = NO;
                 backgroundIsRun = NO;
+                for (int i=0; i<featureTrack.markers.size(); i++) {
+                    featureTrack.markers[i].reset();
+                }
+                featureTrack.keyframes.clear();
             }
             else
             {
