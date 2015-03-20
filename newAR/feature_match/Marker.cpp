@@ -23,10 +23,8 @@ Point3f Marker::getPoint3D(int i)
 void Marker::reset()
 {
     registed = false;
-    for(auto &i:invertIdx)
-    {
-        i.clear();
-    }
+    invertIdx.clear();
+    invertIdx.resize(pts2d.size());
     points3D1.clear();
     
 }

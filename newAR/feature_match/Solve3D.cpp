@@ -10,7 +10,7 @@
 
 //#include "5point.h"
 #include "levmar.h"
-
+#include "sba.h"
 
 Solve3D::~Solve3D()
 {
@@ -347,25 +347,51 @@ void Solve3D::setKMatrix(Mat &KMatrix,double imageWidth, double imageHeight, dou
     KMatrix.at<double>(0, 0) =  focus;
     KMatrix.at<double>(1, 1) =  focus;
     KMatrix.at<double>(2, 2) = 1;
-    KMatrix.at<double>(0, 2) = (imageWidth - 1)/2;
-    KMatrix.at<double>(1, 2) = (imageHeight - 1)/2;
+    KMatrix.at<double>(0, 2) = (imageHeight - 1)/2;
+    KMatrix.at<double>(1, 2) = (imageWidth - 1)/2;
  }
 
 Mat Solve3D::setRotationMatrix(const CMRotationMatrix &rotation)
 {
 
     Mat rotationMatrix(3,3,CV_32F);
+
     rotationMatrix.at<float>(0, 0) = -rotation.m12;
     rotationMatrix.at<float>(0, 1) = -rotation.m22;
     rotationMatrix.at<float>(0, 2) = -rotation.m32;
     
-    rotationMatrix.at<float>(1, 0) = rotation.m11;
-    rotationMatrix.at<float>(1, 1) = rotation.m21;
-    rotationMatrix.at<float>(1, 2) = rotation.m31;
+    rotationMatrix.at<float>(1, 0) = -rotation.m11;
+    rotationMatrix.at<float>(1, 1) = -rotation.m21;
+    rotationMatrix.at<float>(1, 2) = -rotation.m31;
     
     rotationMatrix.at<float>(2, 0) = -rotation.m13;
     rotationMatrix.at<float>(2, 1) = -rotation.m23;
     rotationMatrix.at<float>(2, 2) = -rotation.m33;
+ 
+
+    return rotationMatrix;
+}
+
+Mat Solve3D::setRotationMatrix(double yaw,double pitch,double roll)
+{
+    Mat_<float> rotationMatrix(3,3);
+    const double cx = cos(pitch), sx = sin(pitch), cy = cos(roll), sy = sin(roll), cz = cos(yaw), sz = sin(yaw);
+    const double cycz = cy * cz, sxsy = sx * sy, cysz = cy * sz;
+    rotationMatrix.at<float>(0, 0) = cycz - sxsy * sz;
+    rotationMatrix.at<float>(0, 1) = cysz + sxsy * cz;
+    rotationMatrix.at<float>(0, 2) = -cx * sy;
+    
+    rotationMatrix.at<float>(1, 0) = -cx * sz;
+    rotationMatrix.at<float>(1, 1) = cx * cz;
+    rotationMatrix.at<float>(1, 2) = sx;
+    
+    rotationMatrix.at<float>(2, 0) = sy * cz + sx * cysz;
+    rotationMatrix.at<float>(2, 1) = sy * sz - sx * cycz;
+    rotationMatrix.at<float>(2, 2) = cx * cy;
+    Mat_<float> Rk(3,3);
+    Rk<<0,-1,0,-1,0,0,0,0,-1;
+    rotationMatrix = Rk*rotationMatrix;
+//    cout<<rotationMatrix<<endl;
     return rotationMatrix;
 }
 
@@ -382,34 +408,29 @@ void Solve3D::setTVector(const cv::Mat &_TVector)
 void Solve3D::get3DPoints(Mat KMatrix,Mat rotationMatrix,vector<KeyPoint> &pts2D,vector<Point3f> &pts3D,Mat &TVector)
 {
 #define REAL_HEIGHT 5.0
+    TVector = Mat_<float>(3,1);
+    for (int i=0; i<pts2D.size(); i++)
+    {
 
-	pts3D.clear();
-    TVector.release();
-    TVector = Mat(3,1,CV_32F);
-    cv::Point3d point3D;
+    cv::Point3f point3D;
     Mat imageCoordinate = Mat::Mat(3, 1, CV_32F);
     Mat realCoordinate;
     Mat minusK, minusR;
     invert(KMatrix, minusK, CV_SVD);
     invert(rotationMatrix, minusR, CV_SVD);
     
-	for (int i = 0; i < pts2D.size(); i++)
-	{
-		imageCoordinate.at<float>(2, 0) = 1;
-		float realHeight = REAL_HEIGHT, realScale = 1;
-
-		imageCoordinate.at<float>(0, 0) = pts2D[i].pt.x;
-		imageCoordinate.at<float>(1, 0) = pts2D[i].pt.y;
-
-		Mat right = minusR * minusK * imageCoordinate;
-		realScale = -realHeight / right.at<float>(2, 0);
-
-		point3D.x = right.at<float>(0, 0) * realScale;//+ offset.x;
-		point3D.y = right.at<float>(1, 0) * realScale;//+ offset.y;
-		point3D.z = right.at<float>(2, 0) * realScale + REAL_HEIGHT;
-		pts3D.push_back(point3D);
-	}
-
+    imageCoordinate.at<float>(2, 0) = 1;
+    double realHeight = REAL_HEIGHT, realScale = 1;
+    
+    imageCoordinate.at<float>(0, 0) = pts2D[i].pt.x;
+    imageCoordinate.at<float>(1, 0) = pts2D[i].pt.y;
+    
+    Mat right = minusR * minusK * imageCoordinate;
+    realScale = -realHeight/right.at<float>(2, 0);
+    
+    point3D.x = right.at<float>(0, 0) * realScale ;
+    point3D.y = right.at<float>(1, 0) * realScale ;
+    point3D.z = right.at<float>(2, 0) * realScale + REAL_HEIGHT;
     
     Mat tmp = Mat(3, 1, CV_32F);
     tmp.at<float>(0) = 0;
@@ -419,7 +440,10 @@ void Solve3D::get3DPoints(Mat KMatrix,Mat rotationMatrix,vector<KeyPoint> &pts2D
     
     for(int i=0; i< 3; i++)
         TVector.at<float>(i) = tmp.at<float>(i);
- 
+    //cout<<"TVector:"<<TVector<<endl;
+    
+    pts3D.push_back(point3D);
+    }
 }
 
 
@@ -520,18 +544,70 @@ Point3d Solve3D::getNext3DPoint(int i)
     return point3D;
 }
 
-void Solve3D::getCameraRT(Mat KMatrix,Mat P3D,Mat P2D,Mat &R,Mat &t)
+void Solve3D::getCameraRT(Mat KMatrix,vector<Point3f> P3D,vector<Point2f> P2D,Mat &R,Mat &t,vector<int> &inliers,bool isTracked)
 {
 	Mat dtmp = Mat::zeros(4, 1, CV_32F);
     Mat rvec,TVector;
     Mat temp;
-    TickMeter tm;
-    tm.start();
-    solvePnPRansac(P3D, P2D, KMatrix, dtmp, R, temp , false);
-    tm.stop();
-    R.convertTo(rvec,CV_32F);
+//    Mat p3d,p2d;
+ //   Mat(P3D).convertTo(p3d, CV_64F);
+//    Mat(P2D).convertTo(p2d, CV_64F);
+    solvePnPRansac(P3D, P2D, KMatrix, Mat(), rvec, temp,false,100,3,40,inliers,CV_EPNP);
+    vector<Point3f> P3D_in;
+    vector<Point2f> P2D_in;
+    for(auto i:inliers)
+    {
+        P3D_in.push_back(P3D[i]);
+        P2D_in.push_back(P2D[i]);
+    }
+    if(!isTracked)
+    {
+//    cout<<rvec<<temp<<endl;
+        //   solvePnP(Mat(P3D_in), Mat(P2D_in), KMatrix, Mat(), rvec, temp,CV_ITERATIVE);
+        solvePnPRansac(P3D_in, P2D_in, KMatrix, Mat(), rvec, temp,false);
+    }
+    else
+    {
+        Mat rr;
+        Rodrigues(R,rr);
+        rr.convertTo(rvec, CV_64F);
+        t.convertTo(temp, CV_64F);
+        solvePnPRansac(P3D, P2D, KMatrix, Mat(), rvec, temp,true);
+
+    }
+//    cout<<rvec<<temp<<endl;
+//    isTracked = false;
+    /*
+    if(isTracked)
+    {
+        vector<Point3d> P3D_in;
+        vector<Point2d> P2D_in;
+        for(auto i:inliers)
+        {
+            P3D_in.push_back(P3D[i]);
+            P2D_in.push_back(P2D[i]);
+        }
+        Mat rr;
+        Rodrigues(R,rvec);
+        
+        t.convertTo(temp, CV_64F);
+        cout<<rvec<<temp<<endl;
+        solvePnP(Mat(P3D_in),Mat(P2D_in),KMatrix,Mat(),rvec,temp,true,CV_ITERATIVE);
+        cout<<rvec<<endl;
+        CV_Assert(rvec.at<double>(0,0)<1000);
+//        solvePnPRansac(P3D, P2D, KMatrix, dtmp, rvec, temp , true);
+        cout<<rvec<<temp<<endl;
+    }
+     */
+    /*
+    else
+    {
+        solvePnPRansac(P3D, P2D, KMatrix, dtmp, rvec, temp , false);
+    }
+     */
+    rvec.convertTo(TVector, CV_32F);
+    Rodrigues(TVector, R);
     temp.convertTo(t, CV_32F);
-    Rodrigues(rvec,R);
 }
 
 
@@ -646,5 +722,306 @@ void Solve3D::printPlane(Mat KMatrix,Mat R,Mat t,cv::Mat &drawPlane, double lowX
         }
     }
 }
+
+
+
+
+
+__inline bool sba_getIdx(struct sba_crsm * idxij, int i, int j, int &idx)
+{
+    int rowIdx = idxij->rowptr[i];
+    int rowEnd = idxij->rowptr[i + 1];
+    for (int i = rowIdx; i < rowEnd; i++)
+    {
+        if (idxij->colidx[i] == j)
+        {
+            idx = idxij->val[i];
+            return true;
+        }
+        else if (idxij->colidx[i]>j)
+        {
+            return false;
+        }
+    }
+    return false;
+    
+}
+
+void func(double *p, struct sba_crsm *idxij, int *rcidxs, int *rcsubs, double *hx, void *adata)
+{
+    int m = idxij->nc;//images
+    int n = idxij->nr;//points
+    double * data = (double*)adata;
+    double fx = data[0], fy = data[1], cx = data[2], cy = data[3];
+    double r11, r12, r13, r21, r22, r23, r31, r32, r33;
+    double t1, t2, t3;
+    Mat rvec(3, 1, CV_32F);
+    Mat R;
+    
+    const int offset = 4;
+    for (size_t j = 0; j < m; j++)
+    {
+        float* rd = (float*)rvec.data;
+        rd[0] = p[j * 6];
+        rd[1] = p[j * 6 + 1];
+        rd[2] = p[j * 6 + 2];
+        Rodrigues(rvec, R);
+        rd = (float*)R.data;
+        r11 = rd[0]; r12 = rd[1]; r13 = rd[2];
+        r21 = rd[3]; r22 = rd[4]; r23 = rd[5];
+        r31 = rd[6]; r32 = rd[7]; r33 = rd[8];
+        t1 = p[j * 6 + 3];
+        t2 = p[j * 6 + 4];
+        t3 = p[j * 6 + 5];
+        
+        for (size_t i = 0; i < n; i++)
+        {
+            int idx;
+            if (sba_getIdx(idxij, i, j, idx))
+            {
+                double X = data[offset + 3 * i], Y = data[offset + 3 * i + 1], Z = data[offset + 3 * i + 2];
+                double t = t3 + X*r31 + Y*r32 + Z*r33;
+                hx[2 * idx] = (cx*t3 + fx*t1 + X*(cx*r31 + fx*r11) + Y*(cx*r32 + fx*r12) + Z*(cx*r33 + fx*r13)) / t;
+                hx[2 * idx + 1] = (cy*t3 + fy*t2 + X*(cy*r31 + fy*r21) + Y*(cy*r32 + fy*r22) + Z*(cy*r33 + fy*r23)) / t;
+            }
+        }
+    }
+    
+}
+
+
+
+
+void fjac(double *p, struct sba_crsm *idxij, int *rcidxs, int *rcsubs, double *jac, void *adata)
+{
+    int m = idxij->nc;//images
+    int n = idxij->nr;//points
+    double * data = (double*)adata;
+    double fx = data[0], fy = data[1], cx = data[2], cy = data[3];
+    double r11, r12, r13, r21, r22, r23, r31, r32, r33;
+    double t1, t2, t3;
+    
+    Mat rvec(3, 1, CV_32F);
+    Mat R;
+    Mat jacM;
+    const int offset = 4;
+    for (size_t j = 0; j < m; j++)
+    {
+        float* rd = (float*)rvec.data;
+        rd[0] = p[j * 6];
+        rd[1] = p[j * 6 + 1];
+        rd[2] = p[j * 6 + 2];
+        t1 = p[j * 6 + 3];
+        t2 = p[j * 6 + 4];
+        t3 = p[j * 6 + 5];
+        Rodrigues(rvec, R, jacM);
+        rd = (float*)R.data;
+        r11 = rd[0]; r12 = rd[1]; r13 = rd[2];
+        r21 = rd[3]; r22 = rd[4]; r23 = rd[5];
+        r31 = rd[6]; r32 = rd[7]; r33 = rd[8];
+        jacM = jacM.t();
+        float * jt = (float*)jacM.data;
+        float j111 = jt[0], j112 = jt[1], j113 = jt[2],
+        j121 = jt[3], j122 = jt[4], j123 = jt[5],
+        j131 = jt[6], j132 = jt[7], j133 = jt[8],
+        j211 = jt[9], j212 = jt[10], j213 = jt[11],
+        j221 = jt[12], j222 = jt[13], j223 = jt[14],
+        j231 = jt[15], j232 = jt[16], j233 = jt[17],
+        j311 = jt[18], j312 = jt[19], j313 = jt[20],
+        j321 = jt[21], j322 = jt[22], j323 = jt[23],
+        j331 = jt[24], j332 = jt[25], j333 = jt[26];
+        for (size_t i = 0; i < n; i++)
+        {
+            int idx;
+            if (sba_getIdx(idxij, i, j, idx))
+            {
+                double X = data[offset + 3 * i], Y = data[offset + 3 * i + 1], Z = data[offset + 3 * i + 2];
+                double t = t3 + X*r31 + Y*r32 + Z*r33;
+                jac[idx * 12] = (X*fx*j111) / t - j321*((Y*(cx*t3 + fx*t1 + X*(cx*r31 + fx*r11) + Y*(cx*r32 + fx*r12) + Z*(cx*r33 + fx*r13))) / pow(t, 2) - (Y*cx) / t) - j331*((Z*(cx*t3 + fx*t1 + X*(cx*r31 + fx*r11) + Y*(cx*r32 + fx*r12) + Z*(cx*r33 + fx*r13))) / pow(t, 2) - (Z*cx) / t) - j311*((X*(cx*t3 + fx*t1 + X*(cx*r31 + fx*r11) + Y*(cx*r32 + fx*r12) + Z*(cx*r33 + fx*r13))) / pow(t, 2) - (X*cx) / t) + (Y*fx*j121) / t + (Z*fx*j131) / t;
+                jac[idx * 12 + 1] = (X*fy*j211) / t - j321*((Y*(cy*t3 + fy*t2 + X*(cy*r31 + fy*r21) + Y*(cy*r32 + fy*r22) + Z*(cy*r33 + fy*r23))) / t / t - (Y*cy) / t) - j331*((Z*(cy*t3 + fy*t2 + X*(cy*r31 + fy*r21) + Y*(cy*r32 + fy*r22) + Z*(cy*r33 + fy*r23))) / t / t - (Z*cy) / t) - j311*((X*(cy*t3 + fy*t2 + X*(cy*r31 + fy*r21) + Y*(cy*r32 + fy*r22) + Z*(cy*r33 + fy*r23))) / t / t - (X*cy) / t) + (Y*fy*j221) / t + (Z*fy*j231) / t;
+                jac[idx * 12 + 2] = (X*fx*j112) / t - j322*((Y*(cx*t3 + fx*t1 + X*(cx*r31 + fx*r11) + Y*(cx*r32 + fx*r12) + Z*(cx*r33 + fx*r13))) / t / t - (Y*cx) / t) - j332*((Z*(cx*t3 + fx*t1 + X*(cx*r31 + fx*r11) + Y*(cx*r32 + fx*r12) + Z*(cx*r33 + fx*r13))) / t / t - (Z*cx) / t) - j312*((X*(cx*t3 + fx*t1 + X*(cx*r31 + fx*r11) + Y*(cx*r32 + fx*r12) + Z*(cx*r33 + fx*r13))) / t / t - (X*cx) / t) + (Y*fx*j122) / t + (Z*fx*j132) / t;
+                jac[idx * 12 + 3] = (X*fy*j212) / t - j322*((Y*(cy*t3 + fy*t2 + X*(cy*r31 + fy*r21) + Y*(cy*r32 + fy*r22) + Z*(cy*r33 + fy*r23))) / t / t - (Y*cy) / t) - j332*((Z*(cy*t3 + fy*t2 + X*(cy*r31 + fy*r21) + Y*(cy*r32 + fy*r22) + Z*(cy*r33 + fy*r23))) / t / t - (Z*cy) / t) - j312*((X*(cy*t3 + fy*t2 + X*(cy*r31 + fy*r21) + Y*(cy*r32 + fy*r22) + Z*(cy*r33 + fy*r23))) / t / t - (X*cy) / t) + (Y*fy*j222) / t + (Z*fy*j232) / t;
+                jac[idx * 12 + 4] = (X*fx*j113) / t - j323*((Y*(cx*t3 + fx*t1 + X*(cx*r31 + fx*r11) + Y*(cx*r32 + fx*r12) + Z*(cx*r33 + fx*r13))) / t / t - (Y*cx) / t) - j333*((Z*(cx*t3 + fx*t1 + X*(cx*r31 + fx*r11) + Y*(cx*r32 + fx*r12) + Z*(cx*r33 + fx*r13))) / t / t - (Z*cx) / t) - j313*((X*(cx*t3 + fx*t1 + X*(cx*r31 + fx*r11) + Y*(cx*r32 + fx*r12) + Z*(cx*r33 + fx*r13))) / t / t - (X*cx) / t) + (Y*fx*j123) / t + (Z*fx*j133) / t;
+                jac[idx * 12 + 5] = (X*fy*j213) / t - j323*((Y*(cy*t3 + fy*t2 + X*(cy*r31 + fy*r21) + Y*(cy*r32 + fy*r22) + Z*(cy*r33 + fy*r23))) / t / t - (Y*cy) / t) - j333*((Z*(cy*t3 + fy*t2 + X*(cy*r31 + fy*r21) + Y*(cy*r32 + fy*r22) + Z*(cy*r33 + fy*r23))) / t / t - (Z*cy) / t) - j313*((X*(cy*t3 + fy*t2 + X*(cy*r31 + fy*r21) + Y*(cy*r32 + fy*r22) + Z*(cy*r33 + fy*r23))) / t / t - (X*cy) / t) + (Y*fy*j223) / t + (Z*fy*j233) / t;
+                jac[idx * 12 + 6] = fx / t;
+                jac[idx * 12 + 7] = 0;
+                jac[idx * 12 + 8] = 0;
+                jac[idx * 12 + 9] = fy / t;
+                jac[idx * 12 + 10] = cx / t - (cx*t3 + fx*t1 + X*(cx*r31 + fx*r11) + Y*(cx*r32 + fx*r12) + Z*(cx*r33 + fx*r13)) / t / t;
+                jac[idx * 12 + 11] = cy / t - (cy*t3 + fy*t2 + X*(cy*r31 + fy*r21) + Y*(cy*r32 + fy*r22) + Z*(cy*r33 + fy*r23)) / t / t;
+                
+                
+            }
+        }
+    }
+}
+
+void Solve3D::sba(Mat KMatrix, vector<Keyframe> &image, const vector<Marker> &pts3Ds,bool flag)
+{
+    vector<pair<int, int>> pts3D_Idx;
+    int n = 0;
+    //将所有的3D点排成一列
+    for (size_t i = 0; i < pts3Ds.size(); i++)
+    {
+        if (pts3Ds[i].registed)
+        {
+            for (size_t j = 0; j < pts3Ds[i].points3D1.size(); j++)
+            {
+                if (pts3Ds[i].invertIdx[j].size() > 0)
+                {
+                    pts3D_Idx.push_back(pair<int, int>(i, j));
+                }
+            }
+        }
+    }
+    n = pts3D_Idx.size();
+    int ncon = n;
+    int m = image.size();
+    int mcon = 1;
+    //处理vmask数组
+    char * vmask = new char[n*m];
+    memset(vmask, 0, sizeof(char)*m*n);
+    int nonzero = 0;
+    for (size_t i = 0; i < pts3D_Idx.size(); i++)
+    {
+        for (size_t j = 0; j < pts3Ds[pts3D_Idx[i].first].invertIdx[pts3D_Idx[i].second].size(); j++)
+        {
+            if (!vmask[i*m + pts3Ds[pts3D_Idx[i].first].invertIdx[pts3D_Idx[i].second][j].first])
+            {
+                vmask[i*m + pts3Ds[pts3D_Idx[i].first].invertIdx[pts3D_Idx[i].second][j].first] = 1;
+                nonzero++;
+            }
+        }
+    }
+    
+    int cnp = 6;
+    int pnp = 3;
+    //处理p
+    double *p = new double[cnp*m];
+    for (size_t i = 0; i < m; i++)
+    {
+        Mat rvec;
+        Rodrigues(image[i].R, rvec);
+        p[i*cnp] = rvec.at<float>(0, 0);
+        p[i*cnp + 1] = rvec.at<float>(1, 0);
+        p[i*cnp + 2] = rvec.at<float>(2, 0);
+        p[i*cnp + 3] = image[i].t.at<float>(0, 0);
+        p[i*cnp + 4] = image[i].t.at<float>(1, 0);
+        p[i*cnp + 5] = image[i].t.at<float>(2, 0);
+    }
+    
+    
+    //处理x
+    int mnp = 2;
+    
+    //	double *x = new double[mnp*nonzero];
+    vector<double> x(mnp*nonzero);
+    int z = 0;
+    for (size_t i = 0; i < pts3D_Idx.size(); i++)
+    {
+        auto t = pts3D_Idx[i];
+        int last = -1;
+        for (size_t j = 0; j < pts3Ds[t.first].invertIdx[t.second].size(); j++)
+        {
+            auto u = pts3Ds[t.first].invertIdx[t.second][j];
+            if (last == u.first)
+                continue;
+            CV_Assert(last < u.first);
+            last = u.first;
+            x[z*mnp] = image[u.first].keyPoints[u.second].pt.x;
+            x[z*mnp + 1] = image[u.first].keyPoints[u.second].pt.y;
+            CV_Assert(x[z*mnp]>0&&x[z*mnp]<4000);
+            CV_Assert(x[z*mnp+1]>0&&x[z*mnp+1]<4000);
+            z++;
+        }
+    }
+    
+    vector<double> k(pnp*n + 4);
+    k[0] = KMatrix.at<float>(0, 0);
+    k[1] = KMatrix.at<float>(1, 1);
+    k[2] = KMatrix.at<float>(0, 2);
+    k[3] = KMatrix.at<float>(1, 2);
+    for (size_t i = 0; i < pts3D_Idx.size(); i++)
+    {
+        k[4 + pnp*i] = pts3Ds[pts3D_Idx[i].first].points3D1[pts3D_Idx[i].second].x;
+        k[4 + pnp*i + 1] = pts3Ds[pts3D_Idx[i].first].points3D1[pts3D_Idx[i].second].y;
+        k[4 + pnp*i + 2] = pts3Ds[pts3D_Idx[i].first].points3D1[pts3D_Idx[i].second].z;
+    }
+    double opts[SBA_OPTSSZ], info[SBA_INFOSZ];
+    opts[0] = SBA_INIT_MU; opts[1] = SBA_STOP_THRESH; opts[2] = SBA_STOP_THRESH;
+    opts[3] = SBA_STOP_THRESH;
+    opts[4] = 0.0;
+    if(flag)
+    {
+        cout<<sba_mot_levmar_x(n, m, mcon, vmask, p, cnp, &x[0], NULL, mnp, func, fjac, &k[0], 20, 2, opts, info)<<endl;
+        for (size_t i = 0; i < m; i++)
+        {
+            Mat rvec(3,1,CV_32F);
+            rvec.at<float>(0, 0) = p[i*cnp];
+            rvec.at<float>(1, 0) = p[i*cnp+1];
+            rvec.at<float>(2, 0) = p[i*cnp+2];
+            Rodrigues(rvec, image[i].R);
+            image[i].t.at<float>(0, 0) = p[i*cnp + 3];
+            image[i].t.at<float>(1, 0) = p[i*cnp + 4];
+            image[i].t.at<float>(2, 0) = p[i*cnp + 5];
+        }
+    }
+    
+    cout<<"#camera track project file"<<endl;
+    cout<<"<Image Sequence>"<<endl;
+    cout<<"Sequence:.\\0.jpg"<<endl;
+    cout<<"start:0"<<endl;
+    cout<<"step:1"<<endl;
+    cout<<"end:"<<image.size()-1<<endl;
+    cout<<"</Image Sequence>"<<endl;
+    
+     cout<<"<intrinsic parameter>"<<endl;
+     cout<<KMatrix.at<float>(0,0)<<" "<<KMatrix.at<float>(1,1)<<" "<<KMatrix.at<float>(0,2)<<" "<<KMatrix.at<float>(1,2)<<" 0.0"<<" 1.0"<<endl;
+     cout<<"</intrinsic parameter>"<<endl;
+     cout<<"<Feature Tracks>"<<endl;
+     cout<<n<<endl;
+     for(auto i:pts3D_Idx)
+     {
+     cout<<pts3Ds[i.first].invertIdx[i.second].size()<<" 0 1 ";
+     cout<<pts3Ds[i.first].points3D1[i.second].x<<" "<<pts3Ds[i.first].points3D1[i.second].y<<" "<<0<<endl;
+     auto &t = pts3Ds[i.first].invertIdx[i.second];
+     for(int j=0;j<t.size();j++)
+     {
+     if(!j)
+     {
+     cout<<t[j].first<<" "<<image[t[j].first].keyPoints[t[j].second].pt.x<<" "<<image[t[j].first].keyPoints[t[j].second].pt.y;
+     }
+     else
+     {
+     cout<<" "<<t[j].first<<" "<<image[t[j].first].keyPoints[t[j].second].pt.x<<" "<<image[t[j].first].keyPoints[t[j].second].pt.y;
+     
+     }
+     }
+     cout<<endl;
+     }
+     cout<<"</Feature Tracks>"<<endl;
+     cout<<"<Camera Track>"<<endl;
+    int j =0;
+    for (auto i:image)
+     {
+        cout<<"<FRAME"<<j<<">"<<endl;
+        cout<<KMatrix.at<float>(0,0)<<endl;
+         for (int k=0; k<3; k++) {
+             for (int v=0; v<3; v++) {
+                 cout<<i.R.at<float>(k,v)<<" ";
+                }
+             cout<<i.t.at<float>(k,0)<<endl;
+            }
+         cout<<"0.0 0.0 0.0 1.0"<<endl;
+         cout<<"</FRAME"<<j<<">"<<endl;
+         j++;
+     }
+    cout<<"</Camera Track>"<<endl;
+     
+}
+
+
+
+
 
 

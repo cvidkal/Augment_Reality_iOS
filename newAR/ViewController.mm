@@ -36,6 +36,7 @@ static double machTimeToSecs(uint64_t time)
 @synthesize markerList = _markerList;
 @synthesize matchButton = _matchButton;
 @synthesize refsButton = _refsButton;
+@synthesize saveButton = _saveButton;
 
 - (double)getFPS
 {
@@ -122,8 +123,9 @@ static double machTimeToSecs(uint64_t time)
 {
     featureMatch.addRef(imageObject.clone());
     CMRotationMatrix CR = [self getRotationMatrix];
-    Mat R;
-    R = Solve3D::setRotationMatrix(CR);
+    Mat R,R2;
+    R = Solve3D::setRotationMatrix(yaw,pitch,roll);
+//    R2 = Solve3D::setRotationMatrix(CR);
     featureTrack.setKMatrix(480, 360, focus);
     featureTrack.addMarker(imageObject, R);
     markerNum++;
@@ -157,7 +159,40 @@ static double machTimeToSecs(uint64_t time)
     }];
 }
 
+- (void) saveButton: (UIButton *) button
+{
+    AVCaptureConnection *videoConnection = nil;
+    for (AVCaptureConnection *connection in _stillImageOutput.connections) {
+        for (AVCaptureInputPort *port in [connection inputPorts]) {
+            if ([[port mediaType] isEqual:AVMediaTypeVideo] ) {
+                videoConnection = connection;
+                break;
+            }
+        }
+        if (videoConnection) { break; }
+    }
+    
+    if(videoConnection == nil)
+        return;
+    
+    [_stillImageOutput captureStillImageAsynchronouslyFromConnection:videoConnection completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
+        NSData *imageData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
+        UIImage *image = [[UIImage alloc] initWithData:imageData];
+        static int i =0;
+        if(i<featureTrack.images.size())
+        {
+            UIImage *imageOutput = [OpenCVController UIImageFromCVMat:featureTrack.images[i]];
+        
+            UIImageWriteToSavedPhotosAlbum(imageOutput, nil, nil, nil);
+            i++;
+        }
+        else
+        {
+            i=0;
+        }
 
+    }];
+}
 
 - (void)initUI
 {
@@ -188,6 +223,12 @@ static double machTimeToSecs(uint64_t time)
     [_refsButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
     [_refsButton addTarget:self action:@selector(refsButton:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_refsButton];
+    
+    _saveButton = [[UIButton alloc]initWithFrame:CGRectMake(400, 600, 100, 50)];
+    [_saveButton setTitle:@"Save" forState:UIControlStateNormal];
+    [_saveButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+    [_saveButton addTarget:self action:@selector(saveButton:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:_saveButton];
 }
 
 - (void)show
@@ -219,7 +260,7 @@ static double machTimeToSecs(uint64_t time)
     }
     
     double fov = inputDevice.activeFormat.videoFieldOfView;
-    int height = 360;
+    int height = 480;
     int halfHeight = height/2;
     focus = halfHeight/tan(fov * 3.14159265 / 180 * 0.5);
     
@@ -294,6 +335,7 @@ static double machTimeToSecs(uint64_t time)
     [self setupCameraSession];
     
     [self initUI];
+    saveId = 0;
     
     [_captureSession startRunning];
 }
@@ -322,6 +364,9 @@ static double machTimeToSecs(uint64_t time)
 - (CMRotationMatrix)getRotationMatrix{
     CMDeviceMotion *motion = _motionManager.deviceMotion;
     CMAttitude *attitude = motion.attitude;
+    pitch = attitude.pitch;
+    yaw = attitude.yaw;
+    roll = attitude.roll;
     return attitude.rotationMatrix;
 }
 
@@ -344,8 +389,10 @@ static double machTimeToSecs(uint64_t time)
 
     int matchpointSize = 0;
     CMRotationMatrix CR = [self getRotationMatrix];
-    Mat R;
-    R = Solve3D::setRotationMatrix(CR);
+    Mat R,R2;
+    R = Solve3D::setRotationMatrix(roll ,pitch,yaw);
+    R2 = Solve3D::setRotationMatrix(CR);
+//    cout<<R<<endl<<R2<<endl;
     if(isMatch == NO)
     {
 //        drawFeature(keyPointSize, matOutput, featureMatch);
@@ -362,7 +409,7 @@ static double machTimeToSecs(uint64_t time)
         [self show];
         [mGLView display];
         return ;
-        //_customPreviewerLayer.contents = (__bridge id)dstImageFilter;
+//        _customPreviewerLayer.contents = (__bridge id)dstImageFilter;
         if(isMatch == NO)
             [self addContent:keyPointSize];
         else

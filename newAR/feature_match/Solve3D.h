@@ -2,7 +2,7 @@
 #define __SOLVE3D_H
 #include "headers.h"
 #include "keyframe.h"
-
+#include "Marker.h"
 #include <CoreMotion/CoreMotion.h>
 
 static class Solve3D
@@ -16,13 +16,15 @@ public:
     static void Calibrate_Points(Point2f pp,double focal,vector<Point2f> &origin,vector<Point2f> &out);
     static bool Solve5Point(vector<Point2f> &pts1, vector<Point2f> &pts2, int num_pts, Mat &E, Mat &P, std::vector<int> &ret_inliers);
     static Mat setRotationMatrix(const CMRotationMatrix &rotation);//init the R
-	void setTVector(const Mat& _TVector);
+    static Mat setRotationMatrix(double yaw,double pitch,double roll);
+    void setTVector(const Mat& _TVector);
+    static void sba(Mat KMatrix, vector<Keyframe> &image, const vector<Marker> &pts3Ds,bool flag = true);
     static void get3DPoints(Mat KMatrix, Mat rotationMatrix, vector<KeyPoint> &pts2D, vector<Point3f> &pts3D, Mat &TVector);
     static void get3DPoints(Mat KMatrix,const Mat rotationMatrix,const Mat TVector,const vector<KeyPoint> &pts2D,vector<Point3f> &pts3D);
 	void getinvertMatrix();//get (KR)^-1
     static Mat getNextInvertMatrix(Mat KMatrix,Mat R,Mat t);
 	Point3d getNext3DPoint(int i);
-	static void getCameraRT(Mat KMatrix, Mat P3D, Mat P2D, Mat &R, Mat &t);
+    static void getCameraRT(Mat KMatrix,vector<Point3f> P3D,vector<Point2f> P2D,Mat &R,Mat &t,vector<int> &inliers,bool isTracked);
 	void getOtherPoints();
 	Mat_<float> TVector;
 	void getRotation(Mat &getRotation);

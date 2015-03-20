@@ -124,6 +124,7 @@ bool drawMatcher(int &keypointSize, int &matchpointSize, Mat &matOutput, double 
                     featureTrack.markers[i].reset();
                 }
                 featureTrack.keyframes.clear();
+                featureTrack.images.clear();
             }
             else
             {

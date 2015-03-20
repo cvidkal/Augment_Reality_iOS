@@ -48,7 +48,9 @@ extern double zNear;
     Visualizer* mVisualizer;
     int keyPointSize;
     double detectfps,matchfps;
-    
+    int saveId;
+    double yaw, pitch, roll;
+
     float mFocal;
     
     GLubyte* image;
@@ -65,6 +67,7 @@ extern double zNear;
 @property (nonatomic, strong) UILabel *markerList;
 @property (nonatomic, strong) UIButton *matchButton;
 @property (nonatomic, strong) UIButton *refsButton;
+@property (nonatomic, strong) UIButton *saveButton;
 @end
 
 

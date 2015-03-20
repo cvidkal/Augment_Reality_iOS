@@ -23,7 +23,7 @@ public:
     ~Feature_Track(){};
     vector<Marker> markers;
     vector<Keyframe> keyframes;
-
+    vector<Mat> images;
 
 private:
     bool isKeyFrame(Mat R,Mat t,int &keyFrameNumber);

@@ -113,9 +113,11 @@ void Feature_Track::setKMatrix(double imageWidth, double imageHeight, double foc
 	KMatrix.at<float>(0, 0) = focus;
 	KMatrix.at<float>(1, 1) = focus;
 	KMatrix.at<float>(2, 2) = 1;
-	KMatrix.at<float>(0, 2) = (imageHeight - 1) / 2;
-	KMatrix.at<float>(1, 2) = (imageWidth - 1) / 2;
+	KMatrix.at<float>(0, 2) = (imageWidth - 1) / 2;
+	KMatrix.at<float>(1, 2) = (imageHeight - 1) / 2;
 }
+
+
 
 bool Feature_Track::setCS(cv::Mat current, cv::Mat marker, vector<int> markerNum ,cv::Mat R)
 {
@@ -136,7 +138,22 @@ bool Feature_Track::setCS(cv::Mat current, cv::Mat marker, vector<int> markerNum
     
     
     //The first KeyFrame
+    if (markerNum.empty()) {
+        return false;
+    }
     Keyframe kf;
+    Keyframe mk;
+    mk.markerIdx.push_back(markerNum[0]);
+    mk.img = markers[markerNum[0]].img.clone();
+    mk.descriptor = markers[markerNum[0]].descriptor.clone();
+
+    for (int i=0;i<markers[markerNum[0]].pts2d.size(); i++)
+    {
+        mk.indices.push_back(pair<int,int>(markerNum[0],i));
+        mk.keyPoints.push_back(markers[markerNum[0]].pts2d[i]);
+        mk.pts2D.push_back(markers[markerNum[0]].pts2d[i].pt);
+    }
+
     kf.img = current.clone();
     kf.R = R.clone();
     detector->detect(kf.img, kf.keyPoints);
@@ -155,19 +172,81 @@ bool Feature_Track::setCS(cv::Mat current, cv::Mat marker, vector<int> markerNum
     //{
     matcher->knnMatch(kf.descriptor, markers[markerNum[0]].descriptor, dmatches, 2);
     
-    vector<Point3f> pts3d1, pts3d2;
+    vector<Point3f> pts3d1, pts3d1_t,pts3d2,pts3d2_t;
+    vector<Point2f> pts2d1,pts2d1_t,pts2d2;
     //	vector<Point2f> pts2d1, pts2d2;
+    vector<int> indices;
     for (int i = 0; i < dmatches.size(); i++)
     {
         if ((dmatches[i][0].distance < dmatches[i][1].distance*0.6) && dmatches[i][0].distance < 90)
         {
+            CV_Assert(dmatches[i][0].distance < (0.6*dmatches[i][1].distance));
+            indices.push_back(i);
+            /*
+            bool flag = false;
+            int tmp,tmpi;
             kf.indices[i] = pair<int, int>(markerNum[0], dmatches[i][0].trainIdx);
-            //			markers[markerNum[0]].invertIdx[dmatches[i][0].trainIdx].push_back(pair<int, int>(0, i));
-            pts3d1.push_back(kf.pts3D[dmatches[i][0].queryIdx]);
-            pts3d2.push_back(markers[markerNum[0]].points3D2[dmatches[i][0].trainIdx]);
-            
+            for(int k = 0; k<markers[markerNum[0]].invertIdx[dmatches[i][0].trainIdx].size();k++)
+            {
+                auto j =markers[markerNum[0]].invertIdx[dmatches[i][0].trainIdx][k];
+                
+                if(j.first == markerNum[0])
+                {
+                    tmp = j.first;
+                    tmpi = k;
+                    flag = true;
+                    break;
+                }
+            }
+            if(flag)
+            {
+                if(dmatches[i][0].distance<dmatches[tmp][0].distance)
+                {
+                    markers[markerNum[0]].invertIdx[dmatches[i][0].trainIdx][tmpi].second = i;
+                }
+            }
+            else
+                markers[markerNum[0]].invertIdx[dmatches[i][0].trainIdx].push_back(pair<int, int>(markerNum[0], i));
+  */
+            pts3d1_t.push_back(kf.pts3D[dmatches[i][0].queryIdx]);
+            pts3d2_t.push_back(markers[markerNum[0]].points3D2[dmatches[i][0].trainIdx]);
+            pts2d1_t.push_back(kf.keyPoints[dmatches[i][0].queryIdx].pt);
         }
     }
+    vector<int> inliers;
+    if(pts3d1_t.size()<15)
+        return false;
+    Solve3D::getCameraRT(KMatrix, pts3d1_t, pts2d1_t, kf.R, kf.t,inliers, false);
+    cout<<kf.R<<kf.t<<endl;
+    for(auto j:inliers)
+    {
+        int i=indices[j];
+        pts3d1.push_back(pts3d1_t[j]);
+        pts2d1.push_back(pts2d1_t[j]);
+        pts3d2.push_back(pts3d2_t[j]);
+        bool flag = false;
+        int tmp,tmpi;
+        kf.indices[i] = pair<int, int>(markerNum[0], dmatches[i][0].trainIdx);
+        for(int k = 0; k<markers[markerNum[0]].invertIdx[dmatches[i][0].trainIdx].size();k++)
+        {
+            auto &f =markers[markerNum[0]].invertIdx[dmatches[i][0].trainIdx][k];
+            
+            if(f.first == markerNum[0])
+            {
+                if(dmatches[i][0].distance < dmatches[f.second][0].distance)
+                {
+                    f.second = i;
+                    flag = true;
+                    break;
+                }
+            }
+        }
+        if(!flag)
+        {
+            markers[markerNum[0]].invertIdx[dmatches[i][0].trainIdx].push_back(pair<int, int>(1, i));
+        }
+    }
+    
     if (pts3d1.size()<20) {
         return false;
     }
@@ -185,29 +264,44 @@ bool Feature_Track::setCS(cv::Mat current, cv::Mat marker, vector<int> markerNum
     Mat _pts3d1(pts3d1), _pts3d2(pts3d2);
     vector<Point3f> pts3d3;
     Solve3D::solveSRT(_pts3d2, _pts3d1, s, _R, _t);
+    Solve3D::transformSRT(pts3d2, pts3d3, s, _R, _t);
+    
     
     Solve3D::transformSRT(markers[markerNum[0]].points3D2, markers[markerNum[0]].points3D1, s, _R, _t);
+    
+    Solve3D::getCameraRT(KMatrix, markers[markerNum[0]].points3D1, mk.pts2D, mk.R, mk.t, inliers, false);
+    
+    
+    
+    pts3d1_t.clear();
+    for(int i=0;i<indices.size();i++)
+    {
+        pts3d1_t.push_back(markers[markerNum[0]].points3D1[dmatches[indices[i]][0].trainIdx]);
+    }
+    Solve3D::getCameraRT(KMatrix, pts3d1_t, pts2d1_t, kf.R, kf.t, inliers, false);
+    cout<<kf.R<<kf.t<<endl;
     markers[markerNum[0]].registed = true;
     markers[markerNum[0]].center.x = 0;
     markers[markerNum[0]].center.y = 0;
     markers[markerNum[0]].center.z = 0;
+    
 
-    for (auto i:markers[markerNum[0]].points3D1)
-    {
-        markers[markerNum[0]].center.x += i.x;
-        markers[markerNum[0]].center.y += i.y;
-        markers[markerNum[0]].center.z += i.z;
-    }
     int num = markers[markerNum[0]].points3D1.size();
     markers[markerNum[0]].center.x /= num;
     markers[markerNum[0]].center.y /= num;
     markers[markerNum[0]].center.z /= num;
     
     /*}*/
+    images.push_back(mk.img.clone());
+    keyframes.push_back(mk);
     keyframes.push_back(kf);
+    images.push_back(current.clone());
     keyFrameNumber = 0;
+    Solve3D::sba(KMatrix, keyframes, markers);
+    isTracked = false;
     return true;
 }
+
 void Feature_Track::setRef(Mat ref,int markerNum,Mat R)
 {
     
@@ -294,7 +388,7 @@ bool Feature_Track::isKeyFrame(Mat R,Mat t,int &keyFrameNumber)
     
     
     double minDist = -1;
-    double threshold = 0.6*0.6;
+    double threshold = 1*1;
     int mini;
     vector<double> dists;
     for (int i = 0; i<keyframes.size(); i++)
@@ -313,7 +407,7 @@ bool Feature_Track::isKeyFrame(Mat R,Mat t,int &keyFrameNumber)
     }
     if (mini != keyFrameNumber)
     {
-        cout << minDist << "--" << dists[keyFrameNumber] << endl;
+//        cout << minDist << "--" << dists[keyFrameNumber] << endl;
         if (minDist<dists[keyFrameNumber] * 0.6)
         {
             keyFrameNumber = mini;
@@ -379,6 +473,7 @@ int Feature_Track::searchKeyFrame(int currentNumber,Mat R,Mat t)
     return currentNumber;
 }
 
+
 void Feature_Track::addMarker(Mat frame,Mat R)
 {
     markers.resize(markers.size()+1);
@@ -389,6 +484,42 @@ void Feature_Track::addMarker(Mat frame,Mat R)
     Solve3D::get3DPoints(KMatrix, R, a.pts2d, a.points3D2, t);
     a.invertIdx.resize(a.pts2d.size());
     a.img = frame.clone();
+    
+ /*
+    cout<<"#camera track project file"<<endl;
+    cout<<"<Image Sequence>"<<endl;
+    cout<<"Sequence:.\\0.jpg"<<endl;
+    cout<<"start:0"<<endl;
+    cout<<"step:1"<<endl;
+    cout<<"end:"<<0<<endl;
+    cout<<"</Image Sequence>"<<endl;
+    
+    cout<<"<intrinsic parameter>"<<endl;
+    cout<<KMatrix.at<float>(0,0)<<" "<<KMatrix.at<float>(1,1)<<" "<<KMatrix.at<float>(0,2)<<" "<<KMatrix.at<float>(1,2)<<" 0.0"<<" 1.0"<<endl;
+    cout<<"</intrinsic parameter>"<<endl;
+    cout<<"<Feature Tracks>"<<endl;
+    cout<<a.pts2d.size()<<endl;
+    for(int i=0;i<a.points3D2.size();i++)
+    {
+        cout<<"1 0 1 ";
+        cout<<a.points3D2[i].x<<" "<<a.points3D2[i].y<<" "<<0<<endl;
+        cout<<"0 "<<a.pts2d[i].pt.x<<" "<<a.pts2d[i].pt.y<<endl;
+    }
+    cout<<"</Feature Tracks>"<<endl;
+    cout<<"<Camera Track>"<<endl;
+        cout<<"<FRAME"<<0<<">"<<endl;
+        cout<<KMatrix.at<float>(0,0)<<endl;
+        for (int k=0; k<3; k++) {
+            for (int v=0; v<3; v++) {
+                cout<<R.at<float>(k,v)<<" ";
+            }
+            cout<<t.at<float>(k,0)<<endl;
+        }
+        cout<<"0.0 0.0 0.0 1.0"<<endl;
+        cout<<"</FRAME"<<0<<">"<<endl;
+    cout<<"</Camera Track>"<<endl;
+    images.push_back(frame.clone());
+*/
 //    frame.copyTo(a.img);
 //    markers.push_back(a);
 }
@@ -396,9 +527,20 @@ void Feature_Track::addMarker(Mat frame,Mat R)
 
 bool Feature_Track::track(Mat &frame, Mat & C_GL, double &detectfps, double &matchfps, int &keypointSize, int & keyframeCnt,Feature_Match &featureMatch)
 {
+    static bool is100 = true;
     static bool isNewMarker = false;
     static int newMarker = -1;
-    
+    static Mat R,t;
+    Keyframe tmp;
+    tmp.R = R.clone();
+    tmp.t = t.clone();
+    tmp.keyPoints.clear();
+    tmp.indices.clear();
+    tmp.descriptor.release();
+    tmp.img.release();
+    tmp.markerIdx.clear();
+    tmp.pts2D.clear();
+    tmp.pts3D.clear();
     if (!isTracked)
     {
         //       keyFrameNumber = searchKeyFrame(RIMU, t)
@@ -406,7 +548,7 @@ bool Feature_Track::track(Mat &frame, Mat & C_GL, double &detectfps, double &mat
     
     keyframeCnt = keyFrameNumber;
     TickMeter tm;
-    Keyframe tmp;
+    tmp.img = frame.clone();
     vector<vector<DMatch>> dmatches;
     tm.start();
     detector->detect(frame, tmp.keyPoints);
@@ -415,10 +557,11 @@ bool Feature_Track::track(Mat &frame, Mat & C_GL, double &detectfps, double &mat
     detectfps = 1 / tm.getTimeSec();
     
     
-    Mat pts3D, pts2D;
+ //   Mat pts3D, pts2D;
     vector<Point3f> pts3d; vector<Point2f> pts2d;
-    vector<Point2f> pts2dt;
+    vector<Point3f> pts3d_t;vector<Point2f> pts2d_t;
     // ◊œ»ªÒ»°µ±«∞πÿº¸÷°µƒmarker–≈œ¢£¨∂‘√ø∏ˆmarker∂ºΩ¯––∆•≈‰£¨ªÒµ√»˝Œ¨µ„∫Õ∂˛Œ¨µ„µƒ¡™œµ
+    vector<pair<int,int>> indices;
     for (int j = 0; j < keyframes[keyFrameNumber].markerIdx.size(); j++)
     {
         int markerNum = keyframes[keyFrameNumber].markerIdx[j];
@@ -435,16 +578,10 @@ bool Feature_Track::track(Mat &frame, Mat & C_GL, double &detectfps, double &mat
             tmp.indices.push_back(pair<int, int>(-1, -1));
             if ((dmatches[i][0].distance < dmatches[i][1].distance*0.6) && dmatches[i][0].distance < 90)
             {
-                pts3d.push_back(markers[markerNum].points3D1[dmatches[i][0].trainIdx]);
-                pts2d.push_back(tmp.keyPoints[dmatches[i][0].queryIdx].pt);
-                pts2dt.push_back(markers[markerNum].pts2d[dmatches[i][0].trainIdx].pt);
-                tmp.indices[i] = pair<int, int>(markerNum, dmatches[i][0].trainIdx);
-                Mat temp = Mat(markers[markerNum].points3D1[dmatches[i][0].trainIdx]);
-                temp = temp.t();
-                pts3D.push_back(temp);
-                temp = Mat(tmp.keyPoints[dmatches[i][0].queryIdx].pt);
-                temp = temp.t();
-                pts2D.push_back(temp);
+                indices.push_back(pair<int,int>(markerNum,i));
+                pts3d_t.push_back(markers[markerNum].points3D1[dmatches[i][0].trainIdx]);
+                pts2d_t.push_back(tmp.keyPoints[dmatches[i][0].queryIdx].pt);
+//                tmp.indices[i] = pair<int, int>(markerNum, dmatches[i][0].trainIdx);
             }
         }
         //Mat inliers;
@@ -462,15 +599,55 @@ bool Feature_Track::track(Mat &frame, Mat & C_GL, double &detectfps, double &mat
         //	}
         //}
     }
-    
-    keypointSize = pts3D.rows;
-    if(pts3D.rows<15)
+    keypointSize = pts3d_t.size();
+    if(keypointSize<15)
     {
         isTracked = false;
         return false;
     }
+    vector<int> inliers;
+    Solve3D::getCameraRT(KMatrix, pts3d_t, pts2d_t, tmp.R, tmp.t,inliers,isTracked);
+    R = tmp.R.clone();
+    t = tmp.t.clone();
+    for(auto j:inliers)
+    {
+        auto k = indices[j];
+        auto markerNum = k.first;
+        int i = k.second;
+        tmp.indices[i] = pair<int, int>(markerNum, dmatches[i][0].trainIdx);
+        pts3d.push_back(pts3d_t[j]);
+        pts2d.push_back(pts2d_t[j]);
+    }
+    
+
     //¿˚”√»˝Œ¨µ„∫Õ∂˛Œ¨µ„«ÛΩ‚µ±«∞÷°µƒCamera Pose
-    Solve3D::getCameraRT(KMatrix, pts3D, pts2D, tmp.R, tmp.t);
+
+    
+    Mat rvec;
+    Rodrigues(tmp.R, rvec);
+    vector<Point2f> pts2d2;
+    if(pts3d.size()<15)
+    {
+        isTracked = false;
+        return false;
+    }
+    projectPoints(pts3d, rvec, tmp.t, KMatrix, Mat(), pts2d2);
+    double err=0;
+    
+     for(int i=0;i<pts2d2.size();i++)
+    {
+        err += pow(pts2d2[i].x-pts2d[i].x,2);
+        err += pow(pts2d2[i].y-pts2d[i].y,2);
+    }
+    err /= pts2d2.size();
+    cout<<err<<endl;
+    if(err>3)
+    {
+        isTracked = false;
+    }
+    else{
+        isTracked = true;
+    }
     
     cout<<tmp.t <<endl;
     //»Áπ˚ «¥¥Ω®–¬Markerµƒµ⁄∂˛÷°
@@ -479,8 +656,9 @@ bool Feature_Track::track(Mat &frame, Mat & C_GL, double &detectfps, double &mat
         // π”√¡Ω’≈ÕºœÒµƒæ…markerµƒCorrespondence«ÛΩ‚R∫Õt
         // π”√¡Ω’≈ÕºœÒµƒR∫Õt£¨∫Õ–¬markerµƒ∂˛Œ¨µ„»˝Ω«∂®±Í«ÛΩ‚–¬markerµ„‘⁄÷˜◊¯±Íœµ÷–µƒ◊¯±Í
         //¿˚”√»˝Œ¨µ„◊¯±Í«ÛΩ‚œ‡À∆±‰ªª£¨»ª∫ÛΩ´–¬markerµƒ◊¯±Í◊¢≤·µΩ÷˜◊¯±Íœµ÷–
-        int oldMarkerNum = keyframes[keyFrameNumber].markerIdx[0];
-        int newMarkerNum = keyframes[keyFrameNumber].markerIdx[1];
+        int size = keyframes[keyFrameNumber].markerIdx.size();
+        int oldMarkerNum = keyframes[keyFrameNumber].markerIdx[size-2];
+        int newMarkerNum = keyframes[keyFrameNumber].markerIdx[size-1];
         assert(markers[oldMarkerNum].registed&&!markers[newMarkerNum].registed);
         matcher->knnMatch(tmp.descriptor, markers[newMarkerNum].descriptor, dmatches, 2);
         for (int i = 0; i < dmatches.size(); i++)
@@ -497,6 +675,8 @@ bool Feature_Track::track(Mat &frame, Mat & C_GL, double &detectfps, double &mat
         vector<int> marker3DIdx;
         //”√”⁄«ÛΩ‚»˝Œ¨µ„µƒ∂˛Œ¨Correspondence
         vector<Point2f> pts2D1, pts2D2;
+        vector<Point2f> pts2D1_t,pts2D2_t;
+        vector<int> indices;
         for (int i = 0; i < dmatches.size(); i++)
         {
             int train = dmatches[i][0].trainIdx;
@@ -505,12 +685,24 @@ bool Feature_Track::track(Mat &frame, Mat & C_GL, double &detectfps, double &mat
             {
                 if (keyframes[keyFrameNumber].indices[train].first == tmp.indices[query].first&&keyframes[keyFrameNumber].indices[train].second == tmp.indices[query].second&&tmp.indices[query].first == newMarkerNum)
                 {
-                    marker3DIdx.push_back(tmp.indices[query].second);
-                    pts2D1.push_back(keyframes[keyFrameNumber].keyPoints[train].pt);
-                    pts2D2.push_back(tmp.keyPoints[query].pt);
+                    indices.push_back(tmp.indices[query].second);
+ //                   marker3DIdx.push_back(tmp.indices[query].second);
+                    pts2D1_t.push_back(keyframes[keyFrameNumber].keyPoints[train].pt);
+                    pts2D2_t.push_back(tmp.keyPoints[query].pt);
                 }
             }
         }
+        Mat inliers;
+        findFundamentalMat(pts2D1_t, pts2D2_t,inliers);
+        for (int i=0; i<inliers.rows; i++) {
+            if(inliers.at<char>(i,0))
+            {
+                pts2D1.push_back(pts2D1_t[i]);
+                pts2D2.push_back(pts2D2_t[i]);
+                marker3DIdx.push_back(indices[i]);
+            }
+        }
+        
         Mat P1, P2;
         Mat C1(3, 4, CV_32F), C2(3, 4, CV_32F);
         for (int i = 0; i < 3; i++)
@@ -571,7 +763,7 @@ bool Feature_Track::track(Mat &frame, Mat & C_GL, double &detectfps, double &mat
     }
     
     //»Áπ˚µ±«∞÷°∑˚∫œπÿº¸÷°Ãıº˛
-    if (isKeyFrame(tmp.R, tmp.t,keyFrameNumber))
+    if (isKeyFrame(tmp.R, tmp.t,keyFrameNumber),is100)
     {
         //≈–∂œ «∑Òµ±«∞÷°∫¨”––¬µƒmarker–≈œ¢
         vector<Matches> matches;
@@ -585,15 +777,31 @@ bool Feature_Track::track(Mat &frame, Mat & C_GL, double &detectfps, double &mat
                 newMarker = markerIdx;
                 matcher->knnMatch(tmp.descriptor, markers[markerIdx].descriptor, dmatches, 2);
                 int matchCount = 0;
+                pts2d_t.clear();
+                pts2d.clear();
+                vector<int> indices;
                 for (int i = 0; i < dmatches.size(); i++)
                 {
                     if ((dmatches[i][0].distance < dmatches[i][1].distance*0.6) && dmatches[i][0].distance < 90)
                     {
+                        indices.push_back(i);
+                        pts2d.push_back(tmp.keyPoints[dmatches[i][0].trainIdx].pt);
+                        pts2d_t.push_back(markers[markerIdx].pts2d[i].pt);
+                    }
+                }
+                Mat inliers;
+                if(indices.size()>8)
+                    findFundamentalMat(pts2d, pts2d_t,inliers);
+                for (int j=0; j<inliers.rows; j++) {
+                    if(inliers.at<char>(j,0))
+                    {
+                        int i=indices[j];
                         matchCount++;
                         if (tmp.indices[i].first == -1 && tmp.indices[i].second == -1)
                         {
                             tmp.indices[i] = pair<int, int>(markerIdx, dmatches[i][0].trainIdx);
                         }
+                        
                     }
                 }
                 if (matchCount > 20)
@@ -606,13 +814,40 @@ bool Feature_Track::track(Mat &frame, Mat & C_GL, double &detectfps, double &mat
         }
         for (size_t i = 0; i < tmp.indices.size(); i++)
         {
+            bool flag = false;
             if (tmp.indices[i].first!=-1)
-                markers[tmp.indices[i].first].invertIdx[tmp.indices[i].second].push_back(pair<int,int>(keyframes.size(), i));
+            {
+                for(auto &j:markers[tmp.indices[i].first].invertIdx[tmp.indices[i].second])
+                {
+                    if(j.first == keyframes.size())
+                    {
+                        if(dmatches[i][0].distance < dmatches[j.second][0].distance)
+                        {
+                            j.second = i;
+                            flag = true;
+                            break;
+                        }
+                    }
+                }
+                if(!flag)
+                    markers[tmp.indices[i].first].invertIdx[tmp.indices[i].second].push_back(pair<int,int>(keyframes.size(), i));
+                
+            }
         }
         //       Solve3D::get3DPoints(KMatrix, tmp.R, tmp.t, tmp.keyPoints,tmp.pts3D);
         //		cout<<tmp.t<<endl;
+
         keyframes.push_back(tmp);
+
         keyFrameNumber = keyframes.size() - 1;
+        images.push_back(frame.clone());
+        assert(images.size() == keyframes.size());
+        if(images.size() == 50)
+            is100 = false;
+        if(images.size()%10)
+            Solve3D::sba(KMatrix, keyframes, markers);
+        else
+            Solve3D::sba(KMatrix,keyframes,markers,false);
         //        cout<<"keyframes numbers"<<keyframes.size()<<endl;
     }
     
@@ -626,6 +861,5 @@ bool Feature_Track::track(Mat &frame, Mat & C_GL, double &detectfps, double &mat
     //    {
     //       keyFrameNumber = q;
     //   }
-    isTracked = true;
     return true;
 }
