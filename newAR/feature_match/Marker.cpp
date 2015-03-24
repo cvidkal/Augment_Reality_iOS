@@ -14,17 +14,28 @@ Marker::Marker()
     registed = false;
 }
 
-
-Point3f Marker::getPoint3D(int i)
+Marker::~Marker()
 {
-    return points3D1[i];
+}
+
+Marker::Marker(const Marker& m)
+{
+    points3D1 = m.points3D1;
+    points3D2 = m.points3D2;
+    descriptor = m.descriptor.clone();
+    keypoints = m.keypoints;
+    registed = m.registed;
+    pts2d = m.pts2d;
+    invertIdx = m.invertIdx;
+    center = m.center;
+    img = m.img.clone();
 }
 
 void Marker::reset()
 {
     registed = false;
     invertIdx.clear();
-    invertIdx.resize(pts2d.size());
+    invertIdx.resize(keypoints.size());
     points3D1.clear();
     
 }

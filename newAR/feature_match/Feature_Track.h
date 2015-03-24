@@ -20,11 +20,10 @@ public:
     bool setCS(Mat current,Mat marker,vector<int> markerNum,Mat R);
     bool track(Mat &frame, Mat & C_GL, double &detectfps, double &matchfps, int &keypointSize, int & keyframeCnt,Feature_Match &featureMatch);
     void addMarker(Mat frame,Mat R);
-    ~Feature_Track(){};
+//    ~Feature_Track(){};
+    vector<Mat> images;
     vector<Marker> markers;
     vector<Keyframe> keyframes;
-    vector<Mat> images;
-
 private:
     bool isKeyFrame(Mat R,Mat t,int &keyFrameNumber);
     int searchKeyFrame(int currentNumber,Mat R,Mat t);
@@ -38,10 +37,7 @@ private:
 	Ptr<DescriptorExtractor> extractor;
 	Ptr<DescriptorMatcher> matcher;
 	string _featureType;
-	Mat _ref;
-	Mat desp;
-	vector<KeyPoint> trainPts;
-	vector<Point3f> trainPts3D;
+
     int keyFrameNumber;
     bool isTracked;
 };

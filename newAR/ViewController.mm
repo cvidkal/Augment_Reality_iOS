@@ -107,10 +107,10 @@ static double machTimeToSecs(uint64_t time)
     // glTranslatef(0, 0, -9);
     if(isCapture)
     {
+        [mVisualizer renderGrid];
         for(int i = 0; i < featureTrack.markers.size(); i++)
             if(featureTrack.markers[i].registed)
                 [mVisualizer renderCube:featureTrack.markers[i].center];
-        //[mVisualizer renderGrid];
         
         [mVisualizer setupVideoOrtho];
         
@@ -215,7 +215,8 @@ static double machTimeToSecs(uint64_t time)
     _matchButton = [[UIButton alloc]initWithFrame:CGRectMake(750, 600, 100, 50)];
     [_matchButton setTitle:@"Match" forState:UIControlStateNormal];
     [_matchButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
-    [_matchButton addTarget:self action:@selector(matchButton:) forControlEvents:UIControlEventTouchUpInside];
+    [_matchButton addTarget
+     :self action:@selector(matchButton:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_matchButton];
     
     _refsButton = [[UIButton alloc]initWithFrame:CGRectMake(50, 600, 100, 50)];
@@ -264,7 +265,7 @@ static double machTimeToSecs(uint64_t time)
     int halfHeight = height/2;
     focus = halfHeight/tan(fov * 3.14159265 / 180 * 0.5);
     
-    zNear = focus/halfHeight;
+    zNear = 1/tan(fov*360/480 * 3.14159265 / 180 * 0.5);
     
     //Device input
     AVCaptureDeviceInput *deviceInput = [AVCaptureDeviceInput deviceInputWithDevice:inputDevice error:&error];

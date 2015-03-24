@@ -9,25 +9,33 @@
 #ifndef newAR_Marker_h
 #define newAR_Marker_h
 
-#include "headers.h"
+#include <opencv2/core/core.hpp>
+
+
+using namespace std;
+using namespace cv;
 
 class Marker
 {
 public:
     Marker();
-    Marker(vector<Point3f> _points3D);
-    Point3f getPoint3D(int i);
-    ~Marker(){};
+    ~Marker();
+    Marker(const Marker&);
     void reset();
+    bool registed;
+    
+    
     vector<Point3f> points3D1;
     vector<Point3f> points3D2;
-    bool registed;
     Mat descriptor;
-    vector<KeyPoint> pts2d;
+    Mat img;
+    vector<KeyPoint> keypoints;
+    vector<Point2f> pts2d;
     vector<vector<pair<int, int>>> invertIdx;
     Point3f center;
-    Mat img;
+    
 private:
+
 };
 
 

@@ -54,8 +54,8 @@ GLfloat gCubeVertexData[216] =
     0.5f, 0.5f, -0.5f,         1.0f, 0.0f, 0.0f,
     0.5f, -0.5f, 0.5f,         1.0f, 0.0f, 0.0f,
     0.5f, -0.5f, 0.5f,         1.0f, 0.0f, 0.0f,
-    0.5f, 0.5f, -0.5f,          1.0f, 0.0f, 0.0f,
-    0.5f, 0.5f, 0.5f,         1.0f, 0.0f, 0.0f,
+    0.5f, 0.5f, -0.5f,         1.0f, 0.0f, 0.0f,
+    0.5f, 0.5f, 0.5f,          1.0f, 0.0f, 0.0f,
     
     0.5f, 0.5f, -0.5f,         0.0f, 1.0f, 0.0f,
     -0.5f, 0.5f, -0.5f,        0.0f, 1.0f, 0.0f,
@@ -270,9 +270,11 @@ GLfloat gCubeVertexData[216] =
 
 -(void)renderCube:(Point3f)center
 {
+    
+    glEnable(GL_DEPTH_TEST);
     glEnableClientState(GL_VERTEX_ARRAY);
-    glEnableClientState(GL_NORMAL_ARRAY);
-    glEnableClientState(GL_COLOR_ARRAY);
+    //glEnableClientState(GL_NORMAL_ARRAY);
+    //glEnableClientState(GL_COLOR_ARRAY);
     
     GLfloat nowCubeVertexData[216];
     for(int i = 0; i < 216; i++)
@@ -284,12 +286,13 @@ GLfloat gCubeVertexData[216] =
     }
     
     glVertexPointer(3,GL_FLOAT ,24 , nowCubeVertexData);
-    glNormalPointer(GL_FLOAT, 24, (GLubyte*)nowCubeVertexData+12);
+    //glNormalPointer(GL_FLOAT, 24, ((GLubyte*)nowCubeVertexData)+12);
 
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 36);
     
     glDisableClientState(GL_VERTEX_ARRAY);
-    glDisableClientState(GL_NORMAL_ARRAY);
+    //glDisableClientState(GL_NORMAL_ARRAY);
+    glDisable(GL_DEPTH_TEST);
 }
 
 -(void)renderPlane

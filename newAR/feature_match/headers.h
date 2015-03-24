@@ -16,7 +16,8 @@
 #include <cstring>
 
 #include <opencv2/contrib/contrib.hpp>
-
+#include "Marker.h"
+#include "keyframe.h"
 
 
 
@@ -34,6 +35,8 @@ struct Matches
 	int refIdx;//This is the index of reference frame which matches best for the current frame. 
 	float *data;  //data包含count组数据，每组4个float，(x_1,y_1,x_2,y_2)，如果第一帧那么x_1=x_2,y_1=y_2
 };
+
+
 
 
 

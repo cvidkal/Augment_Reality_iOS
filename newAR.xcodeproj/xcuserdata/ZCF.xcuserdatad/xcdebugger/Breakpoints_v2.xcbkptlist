@@ -40,12 +40,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Feature_Track.cpp"
-            timestampString = "445334763.552785"
+            timestampString = "448789255.319312"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "86"
-            endingLineNumber = "86"
-            landmarkName = "Feature_Track::create_descriptor(string feature)"
+            startingLineNumber = "480"
+            endingLineNumber = "480"
+            landmarkName = "Feature_Track::setCS(cv::Mat current, cv::Mat marker, vector&lt;int&gt; markerNum ,cv::Mat R)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -104,11 +104,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/ViewController.mm"
-            timestampString = "448376175.545826"
+            timestampString = "448801294.139824"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "391"
-            endingLineNumber = "391"
+            startingLineNumber = "392"
+            endingLineNumber = "392"
             landmarkName = "-captureOutput:didOutputSampleBuffer:fromConnection:"
             landmarkType = "5">
          </BreakpointContent>
@@ -232,12 +232,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Feature_Track.cpp"
-            timestampString = "448462512.84692"
+            timestampString = "448808310.931527"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "426"
-            endingLineNumber = "426"
-            landmarkName = "Feature_Track::searchKeyFrame(int currentNumber,Mat R,Mat t)"
+            startingLineNumber = "828"
+            endingLineNumber = "828"
+            landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -248,27 +248,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Feature_Track.cpp"
-            timestampString = "448462512.84692"
+            timestampString = "448810794.471163"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "428"
-            endingLineNumber = "428"
-            landmarkName = "Feature_Track::searchKeyFrame(int currentNumber,Mat R,Mat t)"
+            startingLineNumber = "1037"
+            endingLineNumber = "1037"
+            landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
             landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "newAR/feature_match/Feature_Track.cpp"
-            timestampString = "448462512.84692"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "526"
-            endingLineNumber = "526">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -294,11 +280,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/ViewController.mm"
-            timestampString = "448376175.545826"
+            timestampString = "448801294.139824"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "373"
-            endingLineNumber = "373"
+            startingLineNumber = "374"
+            endingLineNumber = "374"
             landmarkName = "-captureOutput:didOutputSampleBuffer:fromConnection:"
             landmarkType = "5">
          </BreakpointContent>
@@ -310,11 +296,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/ViewController.mm"
-            timestampString = "448376175.545826"
+            timestampString = "448801294.139824"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "374"
-            endingLineNumber = "374"
+            startingLineNumber = "375"
+            endingLineNumber = "375"
             landmarkName = "-captureOutput:didOutputSampleBuffer:fromConnection:"
             landmarkType = "5">
          </BreakpointContent>
@@ -406,12 +392,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Feature_Track.cpp"
-            timestampString = "448462512.84692"
+            timestampString = "448789255.319312"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "336"
-            endingLineNumber = "336"
-            landmarkName = "Feature_Track::setRef(Mat ref,int markerNum,Mat R)"
+            startingLineNumber = "732"
+            endingLineNumber = "732"
+            landmarkName = "Feature_Track::addMarker(Mat frame,Mat R)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -422,43 +408,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Feature_Track.cpp"
-            timestampString = "448462512.84692"
+            timestampString = "448809080.405529"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "440"
-            endingLineNumber = "440"
-            landmarkName = "Feature_Track::searchKeyFrame(int currentNumber,Mat R,Mat t)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "newAR/feature_match/Feature_Track.cpp"
-            timestampString = "448462512.84692"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "427"
-            endingLineNumber = "427"
-            landmarkName = "Feature_Track::searchKeyFrame(int currentNumber,Mat R,Mat t)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "newAR/feature_match/Feature_Track.cpp"
-            timestampString = "448463062.180153"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "842"
-            endingLineNumber = "842"
+            startingLineNumber = "839"
+            endingLineNumber = "839"
             landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
             landmarkType = "5">
          </BreakpointContent>
@@ -470,11 +424,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Feature_Track.cpp"
-            timestampString = "448463062.180153"
+            timestampString = "448808310.931527"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "845"
-            endingLineNumber = "845"
+            startingLineNumber = "830"
+            endingLineNumber = "830"
             landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
             landmarkType = "5">
          </BreakpointContent>
@@ -486,12 +440,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Feature_Track.cpp"
-            timestampString = "448462512.84692"
+            timestampString = "448857213.009446"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "523"
-            endingLineNumber = "523"
-            landmarkName = "Feature_Track::addMarker(Mat frame,Mat R)"
+            startingLineNumber = "1495"
+            endingLineNumber = "1495"
+            landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -502,12 +456,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Feature_Track.cpp"
-            timestampString = "448462512.84692"
+            timestampString = "448857213.009446"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "480"
-            endingLineNumber = "480"
-            landmarkName = "Feature_Track::addMarker(Mat frame,Mat R)"
+            startingLineNumber = "1498"
+            endingLineNumber = "1498"
+            landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -518,12 +472,44 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Feature_Track.cpp"
-            timestampString = "448462512.84692"
+            timestampString = "448810794.471163"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "524"
-            endingLineNumber = "524"
-            landmarkName = "Feature_Track::addMarker(Mat frame,Mat R)"
+            startingLineNumber = "1034"
+            endingLineNumber = "1034"
+            landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Feature_Track.cpp"
+            timestampString = "448810794.471163"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "996"
+            endingLineNumber = "996"
+            landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Feature_Track.cpp"
+            timestampString = "448810794.471163"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1035"
+            endingLineNumber = "1035"
+            landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -550,12 +536,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Feature_Track.cpp"
-            timestampString = "448462512.84692"
+            timestampString = "448789255.319312"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "250"
-            endingLineNumber = "250"
-            landmarkName = "Feature_Track::setCS(cv::Mat current, cv::Mat marker, vector&lt;int&gt; markerNum ,cv::Mat R)"
+            startingLineNumber = "646"
+            endingLineNumber = "646"
+            landmarkName = "Feature_Track::isKeyFrame(Mat R,Mat t,int &amp;keyFrameNumber)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -582,11 +568,43 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Feature_Track.cpp"
-            timestampString = "448462512.84692"
+            timestampString = "448789255.319312"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "289"
-            endingLineNumber = "289"
+            startingLineNumber = "685"
+            endingLineNumber = "685"
+            landmarkName = "Feature_Track::searchKeyFrame(int currentNumber,Mat R,Mat t)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Feature_Track.cpp"
+            timestampString = "448789255.319312"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "693"
+            endingLineNumber = "693"
+            landmarkName = "Feature_Track::searchKeyFrame(int currentNumber,Mat R,Mat t)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Feature_Track.cpp"
+            timestampString = "448789255.319312"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "555"
+            endingLineNumber = "555"
             landmarkName = "Feature_Track::setCS(cv::Mat current, cv::Mat marker, vector&lt;int&gt; markerNum ,cv::Mat R)"
             landmarkType = "5">
          </BreakpointContent>
@@ -598,12 +616,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Feature_Track.cpp"
-            timestampString = "448462512.84692"
+            timestampString = "448789255.319312"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "297"
-            endingLineNumber = "297"
-            landmarkName = "Feature_Track::setCS(cv::Mat current, cv::Mat marker, vector&lt;int&gt; markerNum ,cv::Mat R)"
+            startingLineNumber = "695"
+            endingLineNumber = "695"
+            landmarkName = "Feature_Track::searchKeyFrame(int currentNumber,Mat R,Mat t)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -614,43 +632,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Feature_Track.cpp"
-            timestampString = "448462512.84692"
+            timestampString = "448857213.009446"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "159"
-            endingLineNumber = "159"
-            landmarkName = "Feature_Track::setCS(cv::Mat current, cv::Mat marker, vector&lt;int&gt; markerNum ,cv::Mat R)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "newAR/feature_match/Feature_Track.cpp"
-            timestampString = "448462512.84692"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "299"
-            endingLineNumber = "299"
-            landmarkName = "Feature_Track::setCS(cv::Mat current, cv::Mat marker, vector&lt;int&gt; markerNum ,cv::Mat R)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "newAR/feature_match/Feature_Track.cpp"
-            timestampString = "448463062.180153"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "813"
-            endingLineNumber = "813"
+            startingLineNumber = "1466"
+            endingLineNumber = "1466"
             landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
             landmarkType = "5">
          </BreakpointContent>
@@ -662,11 +648,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Feature_Track.cpp"
-            timestampString = "448462512.84692"
+            timestampString = "448810794.471163"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "529"
-            endingLineNumber = "529"
+            startingLineNumber = "1040"
+            endingLineNumber = "1040"
             landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
             landmarkType = "5">
          </BreakpointContent>
@@ -678,11 +664,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Feature_Track.cpp"
-            timestampString = "448462512.84692"
+            timestampString = "448810794.471163"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "563"
-            endingLineNumber = "563"
+            startingLineNumber = "1084"
+            endingLineNumber = "1084"
             landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
             landmarkType = "5">
          </BreakpointContent>
@@ -694,11 +680,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Feature_Track.cpp"
-            timestampString = "448463062.180153"
+            timestampString = "448857213.009446"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "809"
-            endingLineNumber = "809"
+            startingLineNumber = "1462"
+            endingLineNumber = "1462"
             landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
             landmarkType = "5">
          </BreakpointContent>
@@ -710,12 +696,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Feature_Track.cpp"
-            timestampString = "448462512.84692"
+            timestampString = "448789255.319312"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "302"
-            endingLineNumber = "302"
-            landmarkName = "Feature_Track::setCS(cv::Mat current, cv::Mat marker, vector&lt;int&gt; markerNum ,cv::Mat R)"
+            startingLineNumber = "698"
+            endingLineNumber = "698"
+            landmarkName = "Feature_Track::searchKeyFrame(int currentNumber,Mat R,Mat t)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -726,11 +712,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Feature_Track.cpp"
-            timestampString = "448463062.180153"
+            timestampString = "448857213.009446"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "810"
-            endingLineNumber = "810"
+            startingLineNumber = "1463"
+            endingLineNumber = "1463"
             landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
             landmarkType = "5">
          </BreakpointContent>
@@ -790,12 +776,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Feature_Track.cpp"
-            timestampString = "448462512.84692"
+            timestampString = "448789255.319312"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "270"
-            endingLineNumber = "270"
-            landmarkName = "Feature_Track::setCS(cv::Mat current, cv::Mat marker, vector&lt;int&gt; markerNum ,cv::Mat R)"
+            startingLineNumber = "666"
+            endingLineNumber = "666"
+            landmarkName = "Feature_Track::isKeyFrame(Mat R,Mat t,int &amp;keyFrameNumber)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -822,12 +808,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Feature_Track.cpp"
-            timestampString = "448462512.84692"
+            timestampString = "448789255.319312"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "283"
-            endingLineNumber = "283"
-            landmarkName = "Feature_Track::setCS(cv::Mat current, cv::Mat marker, vector&lt;int&gt; markerNum ,cv::Mat R)"
+            startingLineNumber = "679"
+            endingLineNumber = "679"
+            landmarkName = "Feature_Track::searchKeyFrame(int currentNumber,Mat R,Mat t)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -838,27 +824,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Feature_Track.cpp"
-            timestampString = "448462512.84692"
+            timestampString = "448857213.009446"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "624"
-            endingLineNumber = "624"
-            landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "newAR/feature_match/Feature_Track.cpp"
-            timestampString = "448463062.180153"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "650"
-            endingLineNumber = "650"
+            startingLineNumber = "1303"
+            endingLineNumber = "1303"
             landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
             landmarkType = "5">
          </BreakpointContent>
@@ -870,12 +840,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Solve3D.cpp"
-            timestampString = "448456680.355865"
+            timestampString = "448602271.143018"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "598"
-            endingLineNumber = "598"
-            landmarkName = "Solve3D::getCameraRT(Mat KMatrix,vector&lt;Point3f&gt; P3D,vector&lt;Point2f&gt; P2D,Mat &amp;R,Mat &amp;t,vector&lt;int&gt; &amp;inliers,bool isTracked)"
+            startingLineNumber = "602"
+            endingLineNumber = "602"
+            landmarkName = "Solve3D::getCameraRT(Mat KMatrix,vector&lt;Point3f&gt; &amp;P3D,vector&lt;Point2f&gt; &amp;P2D,Mat &amp;R,Mat &amp;t,vector&lt;int&gt; &amp;inliers,bool isTracked)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -886,12 +856,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Solve3D.cpp"
-            timestampString = "448456680.355865"
+            timestampString = "448602271.143018"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "580"
-            endingLineNumber = "580"
-            landmarkName = "Solve3D::getCameraRT(Mat KMatrix,vector&lt;Point3f&gt; P3D,vector&lt;Point2f&gt; P2D,Mat &amp;R,Mat &amp;t,vector&lt;int&gt; &amp;inliers,bool isTracked)"
+            startingLineNumber = "584"
+            endingLineNumber = "584"
+            landmarkName = "Solve3D::getCameraRT(Mat KMatrix,vector&lt;Point3f&gt; &amp;P3D,vector&lt;Point2f&gt; &amp;P2D,Mat &amp;R,Mat &amp;t,vector&lt;int&gt; &amp;inliers,bool isTracked)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -902,28 +872,28 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Solve3D.cpp"
-            timestampString = "448456680.355865"
+            timestampString = "448602271.143018"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "586"
+            endingLineNumber = "586"
+            landmarkName = "Solve3D::getCameraRT(Mat KMatrix,vector&lt;Point3f&gt; &amp;P3D,vector&lt;Point2f&gt; &amp;P2D,Mat &amp;R,Mat &amp;t,vector&lt;int&gt; &amp;inliers,bool isTracked)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Solve3D.cpp"
+            timestampString = "448602271.143018"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "582"
             endingLineNumber = "582"
-            landmarkName = "Solve3D::getCameraRT(Mat KMatrix,vector&lt;Point3f&gt; P3D,vector&lt;Point2f&gt; P2D,Mat &amp;R,Mat &amp;t,vector&lt;int&gt; &amp;inliers,bool isTracked)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "newAR/feature_match/Solve3D.cpp"
-            timestampString = "448456680.355865"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "578"
-            endingLineNumber = "578"
-            landmarkName = "Solve3D::getCameraRT(Mat KMatrix,vector&lt;Point3f&gt; P3D,vector&lt;Point2f&gt; P2D,Mat &amp;R,Mat &amp;t,vector&lt;int&gt; &amp;inliers,bool isTracked)"
+            landmarkName = "Solve3D::getCameraRT(Mat KMatrix,vector&lt;Point3f&gt; &amp;P3D,vector&lt;Point2f&gt; &amp;P2D,Mat &amp;R,Mat &amp;t,vector&lt;int&gt; &amp;inliers,bool isTracked)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -950,12 +920,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Solve3D.cpp"
-            timestampString = "448456680.355865"
+            timestampString = "448602271.143018"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "584"
-            endingLineNumber = "584"
-            landmarkName = "Solve3D::getCameraRT(Mat KMatrix,vector&lt;Point3f&gt; P3D,vector&lt;Point2f&gt; P2D,Mat &amp;R,Mat &amp;t,vector&lt;int&gt; &amp;inliers,bool isTracked)"
+            startingLineNumber = "588"
+            endingLineNumber = "588"
+            landmarkName = "Solve3D::getCameraRT(Mat KMatrix,vector&lt;Point3f&gt; &amp;P3D,vector&lt;Point2f&gt; &amp;P2D,Mat &amp;R,Mat &amp;t,vector&lt;int&gt; &amp;inliers,bool isTracked)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -966,12 +936,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Solve3D.cpp"
-            timestampString = "448456680.355865"
+            timestampString = "448602271.143018"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "581"
-            endingLineNumber = "581"
-            landmarkName = "Solve3D::getCameraRT(Mat KMatrix,vector&lt;Point3f&gt; P3D,vector&lt;Point2f&gt; P2D,Mat &amp;R,Mat &amp;t,vector&lt;int&gt; &amp;inliers,bool isTracked)"
+            startingLineNumber = "585"
+            endingLineNumber = "585"
+            landmarkName = "Solve3D::getCameraRT(Mat KMatrix,vector&lt;Point3f&gt; &amp;P3D,vector&lt;Point2f&gt; &amp;P2D,Mat &amp;R,Mat &amp;t,vector&lt;int&gt; &amp;inliers,bool isTracked)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -982,12 +952,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Solve3D.cpp"
-            timestampString = "448456680.355865"
+            timestampString = "448602271.143018"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "583"
-            endingLineNumber = "583"
-            landmarkName = "Solve3D::getCameraRT(Mat KMatrix,vector&lt;Point3f&gt; P3D,vector&lt;Point2f&gt; P2D,Mat &amp;R,Mat &amp;t,vector&lt;int&gt; &amp;inliers,bool isTracked)"
+            startingLineNumber = "587"
+            endingLineNumber = "587"
+            landmarkName = "Solve3D::getCameraRT(Mat KMatrix,vector&lt;Point3f&gt; &amp;P3D,vector&lt;Point2f&gt; &amp;P2D,Mat &amp;R,Mat &amp;t,vector&lt;int&gt; &amp;inliers,bool isTracked)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -998,12 +968,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Solve3D.cpp"
-            timestampString = "448456680.355865"
+            timestampString = "448602271.143018"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "591"
-            endingLineNumber = "591"
-            landmarkName = "Solve3D::getCameraRT(Mat KMatrix,vector&lt;Point3f&gt; P3D,vector&lt;Point2f&gt; P2D,Mat &amp;R,Mat &amp;t,vector&lt;int&gt; &amp;inliers,bool isTracked)"
+            startingLineNumber = "595"
+            endingLineNumber = "595"
+            landmarkName = "Solve3D::getCameraRT(Mat KMatrix,vector&lt;Point3f&gt; &amp;P3D,vector&lt;Point2f&gt; &amp;P2D,Mat &amp;R,Mat &amp;t,vector&lt;int&gt; &amp;inliers,bool isTracked)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1030,12 +1000,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Solve3D.cpp"
-            timestampString = "448456680.355865"
+            timestampString = "448602271.143018"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "589"
-            endingLineNumber = "589"
-            landmarkName = "Solve3D::getCameraRT(Mat KMatrix,vector&lt;Point3f&gt; P3D,vector&lt;Point2f&gt; P2D,Mat &amp;R,Mat &amp;t,vector&lt;int&gt; &amp;inliers,bool isTracked)"
+            startingLineNumber = "593"
+            endingLineNumber = "593"
+            landmarkName = "Solve3D::getCameraRT(Mat KMatrix,vector&lt;Point3f&gt; &amp;P3D,vector&lt;Point2f&gt; &amp;P2D,Mat &amp;R,Mat &amp;t,vector&lt;int&gt; &amp;inliers,bool isTracked)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1046,11 +1016,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Feature_Track.cpp"
-            timestampString = "448463062.180153"
+            timestampString = "448857213.009446"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "769"
-            endingLineNumber = "769"
+            startingLineNumber = "1422"
+            endingLineNumber = "1422"
             landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
             landmarkType = "5">
          </BreakpointContent>
@@ -1062,12 +1032,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Feature_Track.cpp"
-            timestampString = "448462512.84692"
+            timestampString = "448810794.471163"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "485"
-            endingLineNumber = "485"
-            landmarkName = "Feature_Track::addMarker(Mat frame,Mat R)"
+            startingLineNumber = "1001"
+            endingLineNumber = "1001"
+            landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1078,11 +1048,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/ViewController.mm"
-            timestampString = "448376175.545826"
+            timestampString = "448801294.139824"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "396"
-            endingLineNumber = "396"
+            startingLineNumber = "397"
+            endingLineNumber = "397"
             landmarkName = "-captureOutput:didOutputSampleBuffer:fromConnection:"
             landmarkType = "5">
          </BreakpointContent>
@@ -1110,13 +1080,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Feature_Track.cpp"
-            timestampString = "448462512.84692"
+            timestampString = "448789255.319312"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "196"
-            endingLineNumber = "196"
-            landmarkName = "Feature_Track::setCS(cv::Mat current, cv::Mat marker, vector&lt;int&gt; markerNum ,cv::Mat R)"
-            landmarkType = "5">
+            startingLineNumber = "592"
+            endingLineNumber = "592">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1126,11 +1094,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Feature_Track.cpp"
-            timestampString = "448463062.180153"
+            timestampString = "448857213.009446"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "829"
-            endingLineNumber = "829"
+            startingLineNumber = "1482"
+            endingLineNumber = "1482"
             landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
             landmarkType = "5">
          </BreakpointContent>
@@ -1142,12 +1110,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Feature_Track.cpp"
-            timestampString = "448462512.84692"
+            timestampString = "448789255.319312"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "217"
-            endingLineNumber = "217"
-            landmarkName = "Feature_Track::setCS(cv::Mat current, cv::Mat marker, vector&lt;int&gt; markerNum ,cv::Mat R)"
+            startingLineNumber = "613"
+            endingLineNumber = "613"
+            landmarkName = "Feature_Track::match(Mat query, Mat train,Matches &amp;matches, double &amp;detectfps, double &amp;matchfps)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1158,12 +1126,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Feature_Track.cpp"
-            timestampString = "448462512.84692"
+            timestampString = "448789255.319312"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "300"
-            endingLineNumber = "300"
-            landmarkName = "Feature_Track::setCS(cv::Mat current, cv::Mat marker, vector&lt;int&gt; markerNum ,cv::Mat R)"
+            startingLineNumber = "696"
+            endingLineNumber = "696"
+            landmarkName = "Feature_Track::searchKeyFrame(int currentNumber,Mat R,Mat t)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1174,27 +1142,27 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Feature_Track.cpp"
-            timestampString = "448462512.84692"
+            timestampString = "448789255.319312"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "301"
-            endingLineNumber = "301"
-            landmarkName = "Feature_Track::setCS(cv::Mat current, cv::Mat marker, vector&lt;int&gt; markerNum ,cv::Mat R)"
+            startingLineNumber = "697"
+            endingLineNumber = "697"
+            landmarkName = "Feature_Track::searchKeyFrame(int currentNumber,Mat R,Mat t)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "No"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Feature_Track.cpp"
-            timestampString = "448462512.84692"
+            timestampString = "448810794.471163"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "564"
-            endingLineNumber = "564"
+            startingLineNumber = "1085"
+            endingLineNumber = "1085"
             landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
             landmarkType = "5">
          </BreakpointContent>
@@ -1206,11 +1174,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Feature_Track.cpp"
-            timestampString = "448462512.84692"
+            timestampString = "448810794.471163"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "576"
-            endingLineNumber = "576"
+            startingLineNumber = "1098"
+            endingLineNumber = "1098"
             landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
             landmarkType = "5">
          </BreakpointContent>
@@ -1222,11 +1190,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Feature_Track.cpp"
-            timestampString = "448462512.84692"
+            timestampString = "448857213.009446"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "608"
-            endingLineNumber = "608"
+            startingLineNumber = "1307"
+            endingLineNumber = "1307"
             landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
             landmarkType = "5">
          </BreakpointContent>
@@ -1238,11 +1206,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Feature_Track.cpp"
-            timestampString = "448463062.180153"
+            timestampString = "448857213.009446"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "654"
-            endingLineNumber = "654"
+            startingLineNumber = "1308"
+            endingLineNumber = "1308"
             landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
             landmarkType = "5">
          </BreakpointContent>
@@ -1254,12 +1222,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Feature_Track.cpp"
-            timestampString = "448463062.180153"
+            timestampString = "448789255.319312"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "655"
-            endingLineNumber = "655"
-            landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
+            startingLineNumber = "677"
+            endingLineNumber = "677"
+            landmarkName = "Feature_Track::searchKeyFrame(int currentNumber,Mat R,Mat t)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1270,27 +1238,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Feature_Track.cpp"
-            timestampString = "448462512.84692"
+            timestampString = "448810794.471163"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "281"
-            endingLineNumber = "281"
-            landmarkName = "Feature_Track::setCS(cv::Mat current, cv::Mat marker, vector&lt;int&gt; markerNum ,cv::Mat R)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "newAR/feature_match/Feature_Track.cpp"
-            timestampString = "448462512.84692"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "544"
-            endingLineNumber = "544"
+            startingLineNumber = "1055"
+            endingLineNumber = "1055"
             landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
             landmarkType = "5">
          </BreakpointContent>
@@ -1302,11 +1254,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Solve3D.cpp"
-            timestampString = "448459376.190101"
+            timestampString = "448602271.143018"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1021"
-            endingLineNumber = "1021"
+            startingLineNumber = "1026"
+            endingLineNumber = "1026"
             landmarkName = "Solve3D::sba(Mat KMatrix, vector&lt;Keyframe&gt; &amp;image, const vector&lt;Marker&gt; &amp;pts3Ds,bool flag)"
             landmarkType = "5">
             <Locations>
@@ -1488,11 +1440,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Solve3D.cpp"
-            timestampString = "448459401.892872"
+            timestampString = "448602271.143018"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1019"
-            endingLineNumber = "1019"
+            startingLineNumber = "1024"
+            endingLineNumber = "1024"
             landmarkName = "Solve3D::sba(Mat KMatrix, vector&lt;Keyframe&gt; &amp;image, const vector&lt;Marker&gt; &amp;pts3Ds,bool flag)"
             landmarkType = "5">
          </BreakpointContent>
@@ -1504,11 +1456,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Feature_Track.cpp"
-            timestampString = "448462512.84692"
+            timestampString = "448857213.009446"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "625"
-            endingLineNumber = "625"
+            startingLineNumber = "1274"
+            endingLineNumber = "1274"
             landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
             landmarkType = "5">
          </BreakpointContent>
@@ -1520,11 +1472,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Feature_Track.cpp"
-            timestampString = "448462622.289813"
+            timestampString = "448810794.471163"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "556"
-            endingLineNumber = "556"
+            startingLineNumber = "1077"
+            endingLineNumber = "1077"
             landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
             landmarkType = "5">
          </BreakpointContent>
@@ -1536,11 +1488,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Feature_Track.cpp"
-            timestampString = "448462663.079179"
+            timestampString = "448810794.471163"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "602"
-            endingLineNumber = "602"
+            startingLineNumber = "1088"
+            endingLineNumber = "1088"
             landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
             landmarkType = "5">
          </BreakpointContent>
@@ -1552,11 +1504,775 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "newAR/feature_match/Feature_Track.cpp"
-            timestampString = "448463053.780724"
+            timestampString = "448857213.009446"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "567"
-            endingLineNumber = "567"
+            startingLineNumber = "1171"
+            endingLineNumber = "1171"
+            landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Feature_Track::track(cv::Mat&amp;, cv::Mat&amp;, double&amp;, double&amp;, int&amp;, int&amp;, Feature_Match&amp;)"
+                  moduleName = "newAR"
+                  urlString = "file:///Users/ZCF/Desktop/change_draw/newAR/feature_match/Feature_Track.cpp"
+                  timestampString = "448514562.44068"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "614"
+                  endingLineNumber = "614"
+                  offsetFromSymbolStart = "7832">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Feature_Track::track(cv::Mat&amp;, cv::Mat&amp;, double&amp;, double&amp;, int&amp;, int&amp;, Feature_Match&amp;)"
+                  moduleName = "newAR"
+                  urlString = "file:///Users/ZCF/Desktop/change_draw/newAR/feature_match/Feature_Track.cpp"
+                  timestampString = "448514562.440965"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "614"
+                  endingLineNumber = "614"
+                  offsetFromSymbolStart = "7844">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Feature_Track.cpp"
+            timestampString = "448857213.009446"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1167"
+            endingLineNumber = "1167"
+            landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Feature_Track.cpp"
+            timestampString = "448810794.471163"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1111"
+            endingLineNumber = "1111"
+            landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Feature_Track.cpp"
+            timestampString = "448857213.009446"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1165"
+            endingLineNumber = "1165"
+            landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Feature_Track.cpp"
+            timestampString = "448857213.009446"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1137"
+            endingLineNumber = "1137"
+            landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Feature_Track.cpp"
+            timestampString = "448857213.009446"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1150"
+            endingLineNumber = "1150"
+            landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Feature_Track.cpp"
+            timestampString = "448857213.009446"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1147"
+            endingLineNumber = "1147"
+            landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Feature_Track.cpp"
+            timestampString = "448810794.471163"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1119"
+            endingLineNumber = "1119"
+            landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Feature_Track.cpp"
+            timestampString = "448857213.009446"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1297"
+            endingLineNumber = "1297"
+            landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../../../Volumes/Group/GuojunChen/a.cpp"
+            timestampString = "448601130.025585"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "15"
+            endingLineNumber = "15"
+            landmarkName = "IC_Angle(const Mat&amp; image, const int half_k, Point2f pt, const vector&lt;int&gt; &amp; u_max)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Feature_Track.cpp"
+            timestampString = "448857213.009446"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1275"
+            endingLineNumber = "1275"
+            landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Feature_Track.cpp"
+            timestampString = "448857213.009446"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1276"
+            endingLineNumber = "1276"
+            landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Feature_Track.cpp"
+            timestampString = "448857213.009446"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1280"
+            endingLineNumber = "1280"
+            landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Feature_Track.cpp"
+            timestampString = "448771306.648174"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "287"
+            endingLineNumber = "287"
+            landmarkName = "Feature_Track::setCS(cv::Mat current, cv::Mat marker, vector&lt;int&gt; markerNum ,cv::Mat R)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Marker.cpp"
+            timestampString = "448615765.700686"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "24"
+            endingLineNumber = "24"
+            landmarkName = "Marker::Marker(const Marker&amp; m)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Marker.cpp"
+            timestampString = "448615765.700686"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "23"
+            endingLineNumber = "23"
+            landmarkName = "Marker::Marker(const Marker&amp; m)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Marker.cpp"
+            timestampString = "448615765.700686"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "21"
+            endingLineNumber = "21"
+            landmarkName = "Marker::Marker(const Marker&amp; m)"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Marker::Marker(Marker const&amp;)"
+                  moduleName = "newAR"
+                  urlString = "file:///Users/ZCF/Desktop/change_draw/newAR/feature_match/Marker.cpp"
+                  timestampString = "448615005.434934"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "26"
+                  endingLineNumber = "26"
+                  offsetFromSymbolStart = "28">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Marker::Marker(Marker const&amp;)"
+                  moduleName = "newAR"
+                  urlString = "file:///Users/ZCF/Desktop/change_draw/newAR/feature_match/Marker.cpp"
+                  timestampString = "448615005.435136"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "36"
+                  endingLineNumber = "36"
+                  offsetFromSymbolStart = "24">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Marker.cpp"
+            timestampString = "448615765.700686"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "18"
+            endingLineNumber = "18"
+            landmarkName = "Marker::~Marker()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Marker.cpp"
+            timestampString = "448615765.700686"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "17"
+            endingLineNumber = "17"
+            landmarkName = "Marker::~Marker()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Feature_Track.cpp"
+            timestampString = "448617369.270933"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "240"
+            endingLineNumber = "240"
+            landmarkName = "Feature_Track::Feature_Track(string feature)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Feature_Track.cpp"
+            timestampString = "448771306.648174"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "360"
+            endingLineNumber = "360"
+            landmarkName = "Feature_Track::setCS(cv::Mat current, cv::Mat marker, vector&lt;int&gt; markerNum ,cv::Mat R)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Feature_Track.cpp"
+            timestampString = "448789255.319312"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "378"
+            endingLineNumber = "378"
+            landmarkName = "Feature_Track::setCS(cv::Mat current, cv::Mat marker, vector&lt;int&gt; markerNum ,cv::Mat R)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Feature_Track.cpp"
+            timestampString = "448789255.319312"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "385"
+            endingLineNumber = "385"
+            landmarkName = "Feature_Track::setCS(cv::Mat current, cv::Mat marker, vector&lt;int&gt; markerNum ,cv::Mat R)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Feature_Track.cpp"
+            timestampString = "448789255.319312"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "394"
+            endingLineNumber = "394"
+            landmarkName = "Feature_Track::setCS(cv::Mat current, cv::Mat marker, vector&lt;int&gt; markerNum ,cv::Mat R)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Feature_Track.cpp"
+            timestampString = "448789255.319312"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "409"
+            endingLineNumber = "409"
+            landmarkName = "Feature_Track::setCS(cv::Mat current, cv::Mat marker, vector&lt;int&gt; markerNum ,cv::Mat R)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Feature_Track.cpp"
+            timestampString = "448789255.319312"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "432"
+            endingLineNumber = "432"
+            landmarkName = "Feature_Track::setCS(cv::Mat current, cv::Mat marker, vector&lt;int&gt; markerNum ,cv::Mat R)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Feature_Track.cpp"
+            timestampString = "448789255.319312"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "503"
+            endingLineNumber = "503"
+            landmarkName = "Feature_Track::setCS(cv::Mat current, cv::Mat marker, vector&lt;int&gt; markerNum ,cv::Mat R)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Feature_Track.cpp"
+            timestampString = "448789255.319312"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "535"
+            endingLineNumber = "535"
+            landmarkName = "Feature_Track::setCS(cv::Mat current, cv::Mat marker, vector&lt;int&gt; markerNum ,cv::Mat R)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Feature_Track.cpp"
+            timestampString = "448789255.319312"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "431"
+            endingLineNumber = "431"
+            landmarkName = "Feature_Track::setCS(cv::Mat current, cv::Mat marker, vector&lt;int&gt; markerNum ,cv::Mat R)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Feature_Track.cpp"
+            timestampString = "448806456.959148"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "819"
+            endingLineNumber = "819"
+            landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Feature_Track.cpp"
+            timestampString = "448809080.405529"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "846"
+            endingLineNumber = "846"
+            landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Feature_Track.cpp"
+            timestampString = "448810794.471163"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "866"
+            endingLineNumber = "866"
+            landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Feature_Track.cpp"
+            timestampString = "448810794.471163"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "904"
+            endingLineNumber = "904"
+            landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Feature_Track.cpp"
+            timestampString = "448810794.471163"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "932"
+            endingLineNumber = "932"
+            landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Feature_Track.cpp"
+            timestampString = "448810794.471163"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "967"
+            endingLineNumber = "967"
+            landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Feature_Track.cpp"
+            timestampString = "448810794.471163"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1002"
+            endingLineNumber = "1002"
+            landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Feature_Track.cpp"
+            timestampString = "448810794.471163"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1012"
+            endingLineNumber = "1012"
+            landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Feature_Track.cpp"
+            timestampString = "448810794.471163"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1021"
+            endingLineNumber = "1021"
+            landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Feature_Track.cpp"
+            timestampString = "448810794.471163"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1112"
+            endingLineNumber = "1112"
+            landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Feature_Track.cpp"
+            timestampString = "448789056.8623"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "300"
+            endingLineNumber = "300"
+            landmarkName = "Feature_Track::setCS(cv::Mat current, cv::Mat marker, vector&lt;int&gt; markerNum ,cv::Mat R)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Feature_Track.cpp"
+            timestampString = "448789063.429125"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "318"
+            endingLineNumber = "318"
+            landmarkName = "Feature_Track::setCS(cv::Mat current, cv::Mat marker, vector&lt;int&gt; markerNum ,cv::Mat R)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Feature_Track.cpp"
+            timestampString = "448789255.319312"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "366"
+            endingLineNumber = "366"
+            landmarkName = "Feature_Track::setCS(cv::Mat current, cv::Mat marker, vector&lt;int&gt; markerNum ,cv::Mat R)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Feature_Track.cpp"
+            timestampString = "448810794.471163"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "884"
+            endingLineNumber = "884"
+            landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Feature_Track.cpp"
+            timestampString = "448810794.471163"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "887"
+            endingLineNumber = "887"
+            landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newAR/feature_match/Feature_Track.cpp"
+            timestampString = "448857213.009446"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1146"
+            endingLineNumber = "1146"
             landmarkName = "Feature_Track::track(Mat &amp;frame, Mat &amp; C_GL, double &amp;detectfps, double &amp;matchfps, int &amp;keypointSize, int &amp; keyframeCnt,Feature_Match &amp;featureMatch)"
             landmarkType = "5">
          </BreakpointContent>

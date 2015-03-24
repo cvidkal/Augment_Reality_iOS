@@ -544,7 +544,7 @@ Point3d Solve3D::getNext3DPoint(int i)
     return point3D;
 }
 
-void Solve3D::getCameraRT(Mat KMatrix,vector<Point3f> P3D,vector<Point2f> P2D,Mat &R,Mat &t,vector<int> &inliers,bool isTracked)
+bool Solve3D::getCameraRT(Mat KMatrix,vector<Point3f> &P3D,vector<Point2f> &P2D,Mat &R,Mat &t,vector<int> &inliers,bool isTracked)
 {
 	Mat dtmp = Mat::zeros(4, 1, CV_32F);
     Mat rvec,TVector;
@@ -555,6 +555,10 @@ void Solve3D::getCameraRT(Mat KMatrix,vector<Point3f> P3D,vector<Point2f> P2D,Ma
     solvePnPRansac(P3D, P2D, KMatrix, Mat(), rvec, temp,false,100,3,40,inliers,CV_EPNP);
     vector<Point3f> P3D_in;
     vector<Point2f> P2D_in;
+    if(inliers.size() <8)
+    {
+        return false;
+    }
     for(auto i:inliers)
     {
         P3D_in.push_back(P3D[i]);
@@ -608,6 +612,7 @@ void Solve3D::getCameraRT(Mat KMatrix,vector<Point3f> P3D,vector<Point2f> P2D,Ma
     rvec.convertTo(TVector, CV_32F);
     Rodrigues(TVector, R);
     temp.convertTo(t, CV_32F);
+    return true;
 }
 
 
