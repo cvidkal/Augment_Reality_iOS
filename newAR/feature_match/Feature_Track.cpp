@@ -400,7 +400,7 @@ bool Feature_Track::setCS(cv::Mat current, cv::Mat marker, vector<int> markerNum
     for (int i=0; i<nowMarker.keypoints.size(); i++) {
         KeyPoint kp;
         auto &pt = warpMarker.pts2D[i];
-        if(pt.x<0||pt.y<0||pt.x>480||pt.y>360)
+        if(pt.x<0||pt.y<0||pt.x>kf.img.cols-10||pt.y>kf.img.rows-10)
         {
             pt.x = 0;
             pt.y = 0;
@@ -913,7 +913,7 @@ bool Feature_Track::track(Mat &frame, Mat & C_GL, double &detectfps, double &mat
         for (int i=0; i<nowMarker.keypoints.size(); i++) {
             KeyPoint kp;
             auto &pt = warpMarker.pts2D[i];
-            if(pt.x<0||pt.y<0||pt.x>480||pt.y>360)
+            if(pt.x<0||pt.y<0||pt.x>tmp.img.cols-10||pt.y>tmp.img.rows-10)
             {
                 pt.x = 0;
                 pt.y = 0;
@@ -1247,7 +1247,7 @@ bool Feature_Track::track(Mat &frame, Mat & C_GL, double &detectfps, double &mat
                     for (int i=0; i<nowMarker.keypoints.size(); i++) {
                         KeyPoint kp;
                         auto &pt = warpMarker.pts2D[i];
-                        if(pt.x<0||pt.y<0||pt.x>480||pt.y>360)
+                        if(pt.x<0||pt.y<0||pt.x>tmp.img.cols-10||pt.y>tmp.img.rows-10)
                         {
                             pt.x = 0;
                             pt.y = 0;
