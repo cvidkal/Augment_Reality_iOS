@@ -34,6 +34,10 @@ public:
 	void get3DPoints(vector<Point3d> &realPoints);
     static void printPlane(Mat KMatrix,Mat R,Mat t,cv::Mat &drawPlane, double lowX, double lowY, double highX, double highY);
     static void getHighAndLow(vector<Point3f> &points3DVector,double &lowX, double &lowY, double &highX, double &highY);
+    static void Slerp(const double &w1, const Scalar &q1, const Scalar &q2, Scalar &output);
+    static void ToRotationMatrix(const Scalar q, Mat &R);
+    static void FromRotationMatrix(const Mat &R, Scalar &q);
+    static void Tlerp(const double &w1, const Mat &origin, const Mat &optimised, Mat &output);
 private:
 	Mat descriptors;
 	Mat P;

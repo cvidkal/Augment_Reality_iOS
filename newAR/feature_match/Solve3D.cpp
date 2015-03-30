@@ -546,13 +546,15 @@ Point3d Solve3D::getNext3DPoint(int i)
 
 bool Solve3D::getCameraRT(Mat KMatrix,vector<Point3f> &P3D,vector<Point2f> &P2D,Mat &R,Mat &t,vector<int> &inliers,bool isTracked)
 {
-	Mat dtmp = Mat::zeros(4, 1, CV_32F);
+    Mat dtmp = Mat::zeros(4, 1, CV_32F);
     Mat rvec,TVector;
     Mat temp;
-//    Mat p3d,p2d;
- //   Mat(P3D).convertTo(p3d, CV_64F);
-//    Mat(P2D).convertTo(p2d, CV_64F);
-    solvePnPRansac(P3D, P2D, KMatrix, Mat(), rvec, temp,false,100,3,40,inliers,CV_EPNP);
+    Scalar origin;
+    double err1=0, err2=0;
+    //    Mat p3d,p2d;
+    //   Mat(P3D).convertTo(p3d, CV_64F);
+    //    Mat(P2D).convertTo(p2d, CV_64F);
+    solvePnPRansac(P3D, P2D, KMatrix, Mat(), rvec, temp,false,100,3,20,inliers,CV_EPNP);
     vector<Point3f> P3D_in;
     vector<Point2f> P2D_in;
     if(inliers.size() <8)
@@ -564,54 +566,103 @@ bool Solve3D::getCameraRT(Mat KMatrix,vector<Point3f> &P3D,vector<Point2f> &P2D,
         P3D_in.push_back(P3D[i]);
         P2D_in.push_back(P2D[i]);
     }
+    
     if(!isTracked)
     {
-//    cout<<rvec<<temp<<endl;
+        //    cout<<rvec<<temp<<endl;
         //   solvePnP(Mat(P3D_in), Mat(P2D_in), KMatrix, Mat(), rvec, temp,CV_ITERATIVE);
-        solvePnPRansac(P3D_in, P2D_in, KMatrix, Mat(), rvec, temp,false);
+        solvePnPRansac(P3D_in, P2D_in, KMatrix, Mat(), rvec, temp,false,100,3,20);
     }
     else
     {
         Mat rr;
         Rodrigues(R,rr);
+        FromRotationMatrix(R, origin);
+        vector<Point2f> pts2d;
+        projectPoints(P3D_in, rr, t, KMatrix, Mat(), pts2d);
+        for (int i = 0; i<pts2d.size(); i++)
+        {
+            err1 += sqrtf(pow(pts2d[i].x - P2D_in[i].x, 2) + pow(pts2d[i].y - P2D_in[i].y, 2));
+        }
+        err1 /= pts2d.size();
         rr.convertTo(rvec, CV_64F);
         t.convertTo(temp, CV_64F);
-        solvePnPRansac(P3D, P2D, KMatrix, Mat(), rvec, temp,true);
-
-    }
-//    cout<<rvec<<temp<<endl;
-//    isTracked = false;
-    /*
-    if(isTracked)
-    {
-        vector<Point3d> P3D_in;
-        vector<Point2d> P2D_in;
-        for(auto i:inliers)
-        {
-            P3D_in.push_back(P3D[i]);
-            P2D_in.push_back(P2D[i]);
-        }
-        Mat rr;
-        Rodrigues(R,rvec);
+        solvePnPRansac(P3D, P2D, KMatrix, Mat(), rvec, temp,true,100,3,20);
+        temp.convertTo(TVector, CV_32F);
+        rvec.convertTo(rr, CV_32F);
+        Mat RR;
+        Rodrigues(rr, RR);
         
-        t.convertTo(temp, CV_64F);
-        cout<<rvec<<temp<<endl;
-        solvePnP(Mat(P3D_in),Mat(P2D_in),KMatrix,Mat(),rvec,temp,true,CV_ITERATIVE);
-        cout<<rvec<<endl;
-        CV_Assert(rvec.at<double>(0,0)<1000);
-//        solvePnPRansac(P3D, P2D, KMatrix, dtmp, rvec, temp , true);
-        cout<<rvec<<temp<<endl;
+        Scalar optimised;
+        FromRotationMatrix(RR, optimised);
+        projectPoints(P3D_in, rr, TVector, KMatrix, Mat(), pts2d);
+        for (int i = 0; i<pts2d.size(); i++)
+        {
+            err2 += sqrtf(pow(pts2d[i].x - P2D_in[i].x, 2) + pow(pts2d[i].y - P2D_in[i].y, 2));
+        }
+        err2 /= pts2d.size();
+        //		CV_Assert(err2 <= err1);
+        double threshold = err2 + (err1 - err2)*0.6;
+        double w = 1;
+        Scalar output;
+        for (int i = 0; i < 10; i++)
+        {
+            w -= 0.1;
+            double err3 = 0;
+            Slerp(w, optimised, origin, output);
+            ToRotationMatrix(output, rr);
+            Rodrigues(rr, RR);
+            Mat tt;
+            Tlerp(w, t, TVector, tt);
+            projectPoints(P3D_in, RR, tt, KMatrix, Mat(), pts2d);
+            for (int j = 0; j<pts2d.size(); j++)
+            {
+                err3 += (pow(pts2d[j].x - P2D_in[j].x, 2) + pow(pts2d[j].y - P2D_in[j].y, 2));
+            }
+            err3 /= pts2d.size();
+            if (err3>threshold)
+            {
+                RR.convertTo(rvec, CV_64F);
+                temp = tt;
+                break;
+            }
+        }
+        
     }
+    //    cout<<rvec<<temp<<endl;
+    //    isTracked = false;
+    /*
+     if(isTracked)
+     {
+     vector<Point3d> P3D_in;
+     vector<Point2d> P2D_in;
+     for(auto i:inliers)
+     {
+     P3D_in.push_back(P3D[i]);
+     P2D_in.push_back(P2D[i]);
+     }
+     Mat rr;
+     Rodrigues(R,rvec);
+     
+     t.convertTo(temp, CV_64F);
+     cout<<rvec<<temp<<endl;
+     solvePnP(Mat(P3D_in),Mat(P2D_in),KMatrix,Mat(),rvec,temp,true,CV_ITERATIVE);
+     cout<<rvec<<endl;
+     CV_Assert(rvec.at<double>(0,0)<1000);
+     //        solvePnPRansac(P3D, P2D, KMatrix, dtmp, rvec, temp , true);
+     cout<<rvec<<temp<<endl;
+     }
      */
     /*
-    else
-    {
-        solvePnPRansac(P3D, P2D, KMatrix, dtmp, rvec, temp , false);
-    }
+     else
+     {
+     solvePnPRansac(P3D, P2D, KMatrix, dtmp, rvec, temp , false);
+     }
      */
     rvec.convertTo(TVector, CV_32F);
     Rodrigues(TVector, R);
     temp.convertTo(t, CV_32F);
+    
     return true;
 }
 
@@ -1023,6 +1074,122 @@ void Solve3D::sba(Mat KMatrix, vector<Keyframe> &image, const vector<Marker> &pt
      }
     cout<<"</Camera Track>"<<endl;
      
+}
+
+
+void Solve3D::Tlerp(const double &w1, const Mat &origin, const Mat &optimised, Mat &output)
+{
+    float* a = (float*)origin.data;
+    float* b = (float*)optimised.data;
+    output = Mat(3, 1, CV_32F);
+    float *c = (float*)output.data;
+    for (size_t i = 0; i < 3; i++)
+    {
+        c[i] = (1 - w1)*a[i] + b[i]*w1;
+    }
+}
+
+void Solve3D::Slerp(const double &w1, const Scalar &q1, const Scalar &q2, Scalar &output)
+{
+    output[0] = q1.dot(q2);
+    if (output[0] > 0.0)
+    {
+        if (output[0] > 1.0)
+            output[0] = 0.0;
+        //else if(output[0] < -1.0)
+        //	output[0] = PI;
+        else
+            output[0] = acos(output[0]);
+        if (fabs(output[0]) < DBL_EPSILON)
+        {
+            output = q1;
+            return;
+        }
+        output[1] = 1 / sin(output[0]);
+        const double s1 = sin(w1 * output[0]) * output[1];
+        const double s2 = sin((1 - w1) * output[0]) * output[1];
+        output[0] = s1 * q1[0] + s2 * q2[0];
+        output[1] = s1 * q1[1] + s2 * q2[1];
+        output[2] = s1 * q1[2] + s2 * q2[2];
+        output[3] = s1 * q1[3] + s2 * q2[3];
+    }
+    else
+    {
+        output[0] = -output[0];
+        if (output[0] > 1.0)
+            output[0] = 0.0;
+        //else if(output[0] < -1.0)
+        //	output[0] = PI;
+        else
+            output[0] = acos(output[0]);
+        if (fabs(output[0]) < DBL_EPSILON)
+        {
+            output = q1;
+            return;
+        }
+        output[1] = 1 / sin(output[0]);
+        const double s1 = sin(w1 * output[0]) * output[1];
+        const double s2 = sin((1 - w1) * output[0]) * output[1];
+        output[0] = s1 * q1[0] - s2 * q2[0];
+        output[1] = s1 * q1[1] - s2 * q2[1];
+        output[2] = s1 * q1[2] - s2 * q2[2];
+        output[3] = s1 * q1[3] - s2 * q2[3];
+    }
+}
+
+
+void Solve3D::ToRotationMatrix(const Scalar q, Mat &R)
+{
+    R = Mat(3, 3, CV_32F);
+    const double q00 = q[0] * q[0], q01 = q[0] * q[1], q02 = q[0] * q[2], q03 = q[0] * q[3];
+    const double q11 = q[1] * q[1], q12 = q[1] * q[2], q13 = q[1] * q[3];
+    const double q22 = q[2] * q[2], q23 = q[2] * q[3];
+    float *p = (float*)R.data;
+    p[0] = q11 + q22;				p[1] = q01 + q23;				p[2] = q02 - q13;
+    p[3] = q01 - q23;				p[4] = q00 + q22;				p[5] = q12 + q03;
+    p[6] = q02 + q13;			p[7] = q12 - q03;		p[8] = q00 + q11;
+    p[0] = 1 - p[0] - p[0];	p[1] = p[1] + p[1];		p[2] = p[2] + p[2];
+    p[3] = p[3] + p[3];		p[4] = 1 - p[4] - p[4];	p[5] = p[5] + p[5];
+    p[6] = p[6] + p[6];		p[7] = p[7] + p[7];		p[8] = 1 - p[8] - p[8];
+}
+
+void Solve3D::FromRotationMatrix(const Mat &R, Scalar &q)
+{
+    
+    float * p = (float*)R.data;
+    q[3] = p[0] + p[4] + p[8];
+    if (q[3] > p[0] && q[3] > p[4] && q[3] > p[8])
+    {
+        q[3] = sqrt(q[3] + 1) * 0.5;
+        q[2] = 0.25 / q[3];
+        q[0] = (p[5] - p[7]) * q[2];
+        q[1] = (p[6] - p[2]) * q[2];
+        q[2] = (p[1] - p[3]) * q[2];
+    }
+    else if (p[0] > p[4] && p[0] > p[8])
+    {
+        q[0] = sqrt(p[0] + p[0] - q[3] + 1) * 0.5;
+        q[3] = 0.25 / q[0];
+        q[1] = (p[1] + p[3]) * q[3];
+        q[2] = (p[2] + p[6]) * q[3];
+        q[3] = (p[5] - p[7]) * q[3];
+    }
+    else if (p[4] > p[8])
+    {
+        q[1] = sqrt(p[4] + p[4] - q[3] + 1) * 0.5;
+        q[3] = 0.25 / q[1];
+        q[0] = (p[1] + p[3]) * q[3];
+        q[2] = (p[5] + p[7]) * q[3];
+        q[3] = (p[6] - p[2]) * q[3];
+    }
+    else
+    {
+        q[2] = sqrt(p[8] + p[8] - q[3] + 1) * 0.5;
+        q[3] = 0.25 / q[2];
+        q[0] = (p[2] + p[6]) * q[3];
+        q[1] = (p[5] + p[7]) * q[3];
+        q[3] = (p[1] - p[3]) * q[3];
+    }
 }
 
 
