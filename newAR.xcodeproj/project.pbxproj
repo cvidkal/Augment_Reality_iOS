@@ -36,7 +36,6 @@
 		4D20BD991AB6C03100B77E2C /* sba_lapack.c in Sources */ = {isa = PBXBuildFile; fileRef = 4D20BD931AB6C03100B77E2C /* sba_lapack.c */; };
 		4D20BD9A1AB6C03100B77E2C /* sba_levmar_wrap.c in Sources */ = {isa = PBXBuildFile; fileRef = 4D20BD941AB6C03100B77E2C /* sba_levmar_wrap.c */; };
 		4D20BD9B1AB6C03100B77E2C /* sba_levmar.c in Sources */ = {isa = PBXBuildFile; fileRef = 4D20BD951AB6C03100B77E2C /* sba_levmar.c */; };
-		4D5DAE771A8B19D100F33048 /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D5DAE761A8B19D100F33048 /* opencv2.framework */; };
 		4D5DAE8E1A8B24BF00F33048 /* Axb.c in Sources */ = {isa = PBXBuildFile; fileRef = 4D5DAE7B1A8B24BF00F33048 /* Axb.c */; };
 		4D5DAE911A8B24BF00F33048 /* lm.c in Sources */ = {isa = PBXBuildFile; fileRef = 4D5DAE801A8B24BF00F33048 /* lm.c */; };
 		4D5DAE931A8B24BF00F33048 /* lmbc.c in Sources */ = {isa = PBXBuildFile; fileRef = 4D5DAE831A8B24BF00F33048 /* lmbc.c */; };
@@ -51,6 +50,7 @@
 		4DA975391A79E8E10097F4F4 /* Solve3D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DA975371A79E8E10097F4F4 /* Solve3D.cpp */; };
 		4DAEF42C1A63B4B4000E91D7 /* hierarchical k-means.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DAEF42B1A63B4B4000E91D7 /* hierarchical k-means.cpp */; };
 		4DAEF42F1A63B4C9000E91D7 /* vocabulary tree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DAEF42E1A63B4C9000E91D7 /* vocabulary tree.cpp */; };
+		4DE11BFA1ACE31770057D47C /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DE11BF91ACE31770057D47C /* opencv2.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -108,7 +108,6 @@
 		4D20BD941AB6C03100B77E2C /* sba_levmar_wrap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sba_levmar_wrap.c; sourceTree = "<group>"; };
 		4D20BD951AB6C03100B77E2C /* sba_levmar.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sba_levmar.c; sourceTree = "<group>"; };
 		4D20BD961AB6C03100B77E2C /* sba.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sba.h; sourceTree = "<group>"; };
-		4D5DAE761A8B19D100F33048 /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = opencv2.framework; path = "../../Desktop/findmarker副本/opencv2.framework"; sourceTree = "<group>"; };
 		4D5DAE7B1A8B24BF00F33048 /* Axb.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = Axb.c; path = feature_match/levmar/Axb.c; sourceTree = "<group>"; };
 		4D5DAE7C1A8B24BF00F33048 /* compiler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = compiler.h; path = feature_match/levmar/compiler.h; sourceTree = "<group>"; };
 		4D5DAE7E1A8B24BF00F33048 /* levmar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = levmar.h; path = feature_match/levmar/levmar.h; sourceTree = "<group>"; };
@@ -133,6 +132,7 @@
 		4DAEF42D1A63B4BE000E91D7 /* hierarchical k-means.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "hierarchical k-means.h"; sourceTree = "<group>"; };
 		4DAEF42E1A63B4C9000E91D7 /* vocabulary tree.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "vocabulary tree.cpp"; sourceTree = "<group>"; };
 		4DAEF4301A63B4CF000E91D7 /* vocabulary tree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "vocabulary tree.h"; sourceTree = "<group>"; };
+		4DE11BF91ACE31770057D47C /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = opencv2.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -140,7 +140,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4D5DAE771A8B19D100F33048 /* opencv2.framework in Frameworks */,
+				4DE11BFA1ACE31770057D47C /* opencv2.framework in Frameworks */,
 				4D8F45B21A7A59DB00A218D0 /* GLKit.framework in Frameworks */,
 				36569AE61A27509C004DEFBA /* OpenGLES.framework in Frameworks */,
 				36B346551A1C39F000DD6F88 /* CoreMotion.framework in Frameworks */,
@@ -182,7 +182,7 @@
 		3616F1B01A19E5DB005EF6D3 = {
 			isa = PBXGroup;
 			children = (
-				4D5DAE761A8B19D100F33048 /* opencv2.framework */,
+				4DE11BF91ACE31770057D47C /* opencv2.framework */,
 				4D8F45B11A7A59DB00A218D0 /* GLKit.framework */,
 				36569AE51A27509C004DEFBA /* OpenGLES.framework */,
 				36B346541A1C39F000DD6F88 /* CoreMotion.framework */,

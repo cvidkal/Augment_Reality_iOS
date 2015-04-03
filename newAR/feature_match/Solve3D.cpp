@@ -10,6 +10,7 @@
 
 //#include "5point.h"
 #include "levmar.h"
+#include <iomanip>
 #include "sba.h"
 
 Solve3D::~Solve3D()
@@ -544,7 +545,7 @@ Point3d Solve3D::getNext3DPoint(int i)
     return point3D;
 }
 
-bool Solve3D::getCameraRT(Mat KMatrix,vector<Point3f> &P3D,vector<Point2f> &P2D,Mat &R,Mat &t,vector<int> &inliers,bool isTracked)
+bool Solve3D::getCameraRT(Mat KMatrix,vector<Point3f> &P3D,vector<Point2f> &P2D,Mat &R,Mat &t,bool isTracked)
 {
     Mat dtmp = Mat::zeros(4, 1, CV_32F);
     Mat rvec,TVector;
@@ -554,24 +555,15 @@ bool Solve3D::getCameraRT(Mat KMatrix,vector<Point3f> &P3D,vector<Point2f> &P2D,
     //    Mat p3d,p2d;
     //   Mat(P3D).convertTo(p3d, CV_64F);
     //    Mat(P2D).convertTo(p2d, CV_64F);
-    solvePnPRansac(P3D, P2D, KMatrix, Mat(), rvec, temp,false,100,3,20,inliers,CV_EPNP);
-    vector<Point3f> P3D_in;
-    vector<Point2f> P2D_in;
-    if(inliers.size() <8)
-    {
-        return false;
-    }
-    for(auto i:inliers)
-    {
-        P3D_in.push_back(P3D[i]);
-        P2D_in.push_back(P2D[i]);
-    }
+    //    solvePnPRansac(P3D, P2D, KMatrix, Mat(), rvec, temp,false,100,3,20,inliers,CV_EPNP);
+    //   vector<Point3f> P3D_in;
+    //   vector<Point2f> P2D_in;
     
     if(!isTracked)
     {
         //    cout<<rvec<<temp<<endl;
         //   solvePnP(Mat(P3D_in), Mat(P2D_in), KMatrix, Mat(), rvec, temp,CV_ITERATIVE);
-        solvePnPRansac(P3D_in, P2D_in, KMatrix, Mat(), rvec, temp,false,100,3,20);
+        solvePnPRansac(P3D, P2D, KMatrix, Mat(), rvec, temp,false,100,3,20);
     }
     else
     {
@@ -579,10 +571,10 @@ bool Solve3D::getCameraRT(Mat KMatrix,vector<Point3f> &P3D,vector<Point2f> &P2D,
         Rodrigues(R,rr);
         FromRotationMatrix(R, origin);
         vector<Point2f> pts2d;
-        projectPoints(P3D_in, rr, t, KMatrix, Mat(), pts2d);
+        projectPoints(P3D, rr, t, KMatrix, Mat(), pts2d);
         for (int i = 0; i<pts2d.size(); i++)
         {
-            err1 += sqrtf(pow(pts2d[i].x - P2D_in[i].x, 2) + pow(pts2d[i].y - P2D_in[i].y, 2));
+            err1 += sqrtf(pow(pts2d[i].x - P2D[i].x, 2) + pow(pts2d[i].y - P2D[i].y, 2));
         }
         err1 /= pts2d.size();
         rr.convertTo(rvec, CV_64F);
@@ -595,16 +587,17 @@ bool Solve3D::getCameraRT(Mat KMatrix,vector<Point3f> &P3D,vector<Point2f> &P2D,
         
         Scalar optimised;
         FromRotationMatrix(RR, optimised);
-        projectPoints(P3D_in, rr, TVector, KMatrix, Mat(), pts2d);
+        projectPoints(P3D, rr, TVector, KMatrix, Mat(), pts2d);
         for (int i = 0; i<pts2d.size(); i++)
         {
-            err2 += sqrtf(pow(pts2d[i].x - P2D_in[i].x, 2) + pow(pts2d[i].y - P2D_in[i].y, 2));
+            err2 += sqrtf(pow(pts2d[i].x - P2D[i].x, 2) + pow(pts2d[i].y - P2D[i].y, 2));
         }
         err2 /= pts2d.size();
         //		CV_Assert(err2 <= err1);
-        double threshold = err2 + (err1 - err2)*0.6;
+        double threshold = err2 * 1.5;
         double w = 1;
         Scalar output;
+        Mat tt;
         for (int i = 0; i < 10; i++)
         {
             w -= 0.1;
@@ -612,21 +605,20 @@ bool Solve3D::getCameraRT(Mat KMatrix,vector<Point3f> &P3D,vector<Point2f> &P2D,
             Slerp(w, optimised, origin, output);
             ToRotationMatrix(output, rr);
             Rodrigues(rr, RR);
-            Mat tt;
             Tlerp(w, t, TVector, tt);
-            projectPoints(P3D_in, RR, tt, KMatrix, Mat(), pts2d);
+            projectPoints(P3D, RR, tt, KMatrix, Mat(), pts2d);
             for (int j = 0; j<pts2d.size(); j++)
             {
-                err3 += (pow(pts2d[j].x - P2D_in[j].x, 2) + pow(pts2d[j].y - P2D_in[j].y, 2));
+                err3 += sqrtf(pow(pts2d[j].x - P2D[j].x, 2) + pow(pts2d[j].y - P2D[j].y, 2));
             }
             err3 /= pts2d.size();
             if (err3>threshold)
             {
-                RR.convertTo(rvec, CV_64F);
-                temp = tt;
                 break;
             }
         }
+        RR.convertTo(rvec, CV_64F);
+        temp = tt;
         
     }
     //    cout<<rvec<<temp<<endl;
@@ -1064,9 +1056,9 @@ void Solve3D::sba(Mat KMatrix, vector<Keyframe> &image, const vector<Marker> &pt
         cout<<KMatrix.at<float>(0,0)<<endl;
          for (int k=0; k<3; k++) {
              for (int v=0; v<3; v++) {
-                 cout<<i.R.at<float>(k,v)<<" ";
+                 cout<<setiosflags(ios::fixed) << setprecision(7) <<i.R.at<float>(k,v)<<" ";
                 }
-             cout<<i.t.at<float>(k,0)<<endl;
+             cout<<setiosflags(ios::fixed) << setprecision(7) <<i.t.at<float>(k,0)<<endl;
             }
          cout<<"0.0 0.0 0.0 1.0"<<endl;
          cout<<"</FRAME"<<j<<">"<<endl;
@@ -1075,8 +1067,6 @@ void Solve3D::sba(Mat KMatrix, vector<Keyframe> &image, const vector<Marker> &pt
     cout<<"</Camera Track>"<<endl;
      
 }
-
-
 void Solve3D::Tlerp(const double &w1, const Mat &origin, const Mat &optimised, Mat &output)
 {
     float* a = (float*)origin.data;

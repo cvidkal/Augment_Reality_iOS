@@ -3,6 +3,11 @@
 #include <opencv2/core/core.hpp>
 #include <algorithm>
 
+inline bool isClose(const Point2f &a,const Point2f &b)
+{
+    int dist = abs(a.x-b.x)+abs(a.y-b.y);
+    return dist<15;
+}
 
 inline bool RoiPredicate(const float minX, const float minY, const float maxX, const float maxY, const KeyPoint& keyPt)
 {
@@ -265,43 +270,40 @@ void Feature_Track::setKMatrix(double imageWidth, double imageHeight, double foc
 
 
 
-bool Feature_Track::setCS(cv::Mat current, cv::Mat marker, vector<int> markerNum ,cv::Mat R)
+bool Feature_Track::setCS(cv::Mat current, cv::Mat marker, int markerNum ,cv::Mat R)
 {
     /*
-    //match correpondence of current frame and warpped marker
-    vector<KeyPoint> markerPoints;
-    Mat markerDesp;
-    Keyframe kf;
-    kf.img = current.clone();
-    kf.R  = R.clone();
-    detector->detect(kf.img, kf.keyPoints);
-    extractor->compute(kf.img, kf.keyPoints, kf.descriptor);
-    detector->detect(marker, markerPoints);
-    extractor->compute(marker, markerPoints, markerDesp);
-    vector<vector<DMatch>> dmatches;
-    matcher->knnMatch(kf.descriptor, markerDesp, dmatches, 2);
-    */
+     //match correpondence of current frame and warpped marker
+     vector<KeyPoint> markerPoints;
+     Mat markerDesp;
+     Keyframe kf;
+     kf.img = current.clone();
+     kf.R  = R.clone();
+     detector->detect(kf.img, kf.keyPoints);
+     extractor->compute(kf.img, kf.keyPoints, kf.descriptor);
+     detector->detect(marker, markerPoints);
+     extractor->compute(marker, markerPoints, markerDesp);
+     vector<vector<DMatch>> dmatches;
+     matcher->knnMatch(kf.descriptor, markerDesp, dmatches, 2);
+     */
     
     keyframes.clear();
     //The first KeyFrame
-    if (markerNum.empty()) {
-        return false;
-    }
     Keyframe kf;
     int nowKeyFrameNum = 0;
-    auto & nowMarker = markers[markerNum[0]];
- //   Keyframe mk;
- //   mk.markerIdx.push_back(markerNum[0]);
- //   mk.img = markers[markerNum[0]].img.clone();
-//    mk.descriptor = markers[markerNum[0]].descriptor.clone();
-//
- //   for (int i=0;i<markers[markerNum[0]].pts2d.size(); i++)
- //   {
- //       mk.indices.push_back(pair<int,int>(markerNum[0],i));
- //       mk.keyPoints.push_back(markers[markerNum[0]].pts2d[i]);
- //       mk.pts2D.push_back(markers[markerNum[0]].pts2d[i].pt);
- //   }
-
+    auto & nowMarker = markers[markerNum];
+    //   Keyframe mk;
+    //   mk.markerIdx.push_back(markerNum);
+    //   mk.img = markers[markerNum].img.clone();
+    //    mk.descriptor = markers[markerNum].descriptor.clone();
+    //
+    //   for (int i=0;i<markers[markerNum].pts2d.size(); i++)
+    //   {
+    //       mk.indices.push_back(pair<int,int>(markerNum,i));
+    //       mk.keyPoints.push_back(markers[markerNum].pts2d[i]);
+    //       mk.pts2D.push_back(markers[markerNum].pts2d[i].pt);
+    //   }
+    
     kf.img = current.clone();
     kf.R = R.clone();
     detector->detect(kf.img, kf.keyPoints);
@@ -310,7 +312,7 @@ bool Feature_Track::setCS(cv::Mat current, cv::Mat marker, vector<int> markerNum
     //Use the initial Camera Pose to estimate all 3D points, suppose all keyPoints are on a plane(Height = 5).
     Solve3D::get3DPoints(KMatrix, kf.R, kf.keyPoints, kf.pts3D, kf.t);
     
-    kf.markerIdx.push_back(markerNum[0]);
+    kf.markerIdx.push_back(markerNum);
     vector<vector<DMatch>> dmatches;
     for (int i = 0; i < kf.keyPoints.size(); i++)
     {
@@ -331,31 +333,31 @@ bool Feature_Track::setCS(cv::Mat current, cv::Mat marker, vector<int> markerNum
             CV_Assert(dmatches[i][0].distance < (0.6*dmatches[i][1].distance));
             indices.push_back(i);
             /*
-            bool flag = false;
-            int tmp,tmpi;
-            kf.indices[i] = pair<int, int>(markerNum[0], dmatches[i][0].trainIdx);
-            for(int k = 0; k<markers[markerNum[0]].invertIdx[dmatches[i][0].trainIdx].size();k++)
-            {
-                auto j =markers[markerNum[0]].invertIdx[dmatches[i][0].trainIdx][k];
-                
-                if(j.first == markerNum[0])
-                {
-                    tmp = j.first;
-                    tmpi = k;
-                    flag = true;
-                    break;
-                }
-            }
-            if(flag)
-            {
-                if(dmatches[i][0].distance<dmatches[tmp][0].distance)
-                {
-                    markers[markerNum[0]].invertIdx[dmatches[i][0].trainIdx][tmpi].second = i;
-                }
-            }
-            else
-                markers[markerNum[0]].invertIdx[dmatches[i][0].trainIdx].push_back(pair<int, int>(markerNum[0], i));
-  */
+             bool flag = false;
+             int tmp,tmpi;
+             kf.indices[i] = pair<int, int>(markerNum, dmatches[i][0].trainIdx);
+             for(int k = 0; k<markers[markerNum].invertIdx[dmatches[i][0].trainIdx].size();k++)
+             {
+             auto j =markers[markerNum].invertIdx[dmatches[i][0].trainIdx][k];
+             
+             if(j.first == markerNum)
+             {
+             tmp = j.first;
+             tmpi = k;
+             flag = true;
+             break;
+             }
+             }
+             if(flag)
+             {
+             if(dmatches[i][0].distance<dmatches[tmp][0].distance)
+             {
+             markers[markerNum].invertIdx[dmatches[i][0].trainIdx][tmpi].second = i;
+             }
+             }
+             else
+             markers[markerNum].invertIdx[dmatches[i][0].trainIdx].push_back(pair<int, int>(markerNum, i));
+             */
             pts3d1_t.push_back(kf.pts3D[dmatches[i][0].queryIdx]);
             pts3d2_t.push_back(nowMarker.points3D2[dmatches[i][0].trainIdx]);
             pts2d1_t.push_back(kf.keyPoints[dmatches[i][0].queryIdx].pt);
@@ -412,7 +414,7 @@ bool Feature_Track::setCS(cv::Mat current, cv::Mat marker, vector<int> markerNum
         warpMarker.keyPoints.push_back(kp);
     }
     foo(warpMarker.img, warpMarker.keyPoints);
-    vector<int> idx;
+    kf.idxs.resize(1);
     for(int i=0;i<warpMarker.keyPoints.size();i++)
     {
         unsigned int scale = warpMarker.keyPoints[i].octave;
@@ -424,11 +426,13 @@ bool Feature_Track::setCS(cv::Mat current, cv::Mat marker, vector<int> markerNum
         const int border_y = warpMarker.img.rows - border;
         if(!RoiPredicate((float)border,(float)border,(float)border_x,(float)border_y,warpMarker.keyPoints[i]))
         {
-            idx.push_back(i);
+            kf.idxs[0].push_back(i);
         }
     }
     extractor->compute(warpMarker.img, warpMarker.keyPoints, warpMarker.descriptor);
     matcher->knnMatch(kf.descriptor, warpMarker.descriptor, dmatches,2);
+    kf.descriptors.push_back(warpMarker.descriptor);
+    kf.keyPts.push_back(warpMarker.keyPoints);
     pts2d1_t.clear();
     pts2d2_t.clear();
     indices.clear();
@@ -437,7 +441,7 @@ bool Feature_Track::setCS(cv::Mat current, cv::Mat marker, vector<int> markerNum
         if ((dmatches[i][0].distance < dmatches[i][1].distance*0.6) && dmatches[i][0].distance < 90)
         {
             indices.push_back(i);
-            auto trainIdx =idx[dmatches[i][0].trainIdx];
+            auto trainIdx =kf.idxs[0][dmatches[i][0].trainIdx];
             CV_Assert(dmatches[i][0].distance < (0.6*dmatches[i][1].distance));
             pts2d1_t.push_back(kf.keyPoints[dmatches[i][0].queryIdx].pt);
             pts2d2_t.push_back(nowMarker.keypoints[trainIdx].pt);
@@ -463,13 +467,13 @@ bool Feature_Track::setCS(cv::Mat current, cv::Mat marker, vector<int> markerNum
             pts3d1.push_back(pts3d1_t[i]);
             pts3d2.push_back(pts3d2_t[i]);
             bool flag = false;
-            auto trainIdx =idx[dmatches[i][0].trainIdx];
-            kf.indices[dmatches[i][0].queryIdx] = pair<int,int>(markerNum[0],trainIdx);
-            for(int k = 0; k<markers[markerNum[0]].invertIdx[trainIdx].size();k++)
+            auto trainIdx =kf.idxs[0][dmatches[i][0].trainIdx];
+            kf.indices[dmatches[i][0].queryIdx] = pair<int,int>(markerNum,trainIdx);
+            for(int k = 0; k<markers[markerNum].invertIdx[trainIdx].size();k++)
             {
-                auto &f =markers[markerNum[0]].invertIdx[trainIdx][k];
+                auto &f =markers[markerNum].invertIdx[trainIdx][k];
                 
-                if(f.first == markerNum[0])
+                if(f.first == markerNum)
                 {
                     if(dmatches[i][0].distance < dmatches[f.second][0].distance)
                     {
@@ -481,51 +485,51 @@ bool Feature_Track::setCS(cv::Mat current, cv::Mat marker, vector<int> markerNum
             }
             if(!flag)
             {
-                markers[markerNum[0]].invertIdx[trainIdx].push_back(pair<int, int>(nowKeyFrameNum, i));
+                markers[markerNum].invertIdx[trainIdx].push_back(pair<int, int>(nowKeyFrameNum, i));
             }
         }
     }
     /*
-    
-    vector<int> inliers;
-    if(pts3d1_t.size()<15)
-        return false;
-    Solve3D::getCameraRT(KMatrix, pts3d1_t, pts2d1_t, kf.R, kf.t,inliers, false);
-    cout<<kf.R<<kf.t<<endl;
-    for(auto j:inliers)
-    {
-        int i=indices[j];
-        pts3d1.push_back(pts3d1_t[j]);
-        pts2d1.push_back(pts2d1_t[j]);
-        pts3d2.push_back(pts3d2_t[j]);
-        bool flag = false;
-        int tmp,tmpi;
-        kf.indices[i] = pair<int, int>(markerNum[0], dmatches[i][0].trainIdx);
-        for(int k = 0; k<markers[markerNum[0]].invertIdx[dmatches[i][0].trainIdx].size();k++)
-        {
-            auto &f =markers[markerNum[0]].invertIdx[dmatches[i][0].trainIdx][k];
-            
-            if(f.first == markerNum[0])
-            {
-                if(dmatches[i][0].distance < dmatches[f.second][0].distance)
-                {
-                    f.second = i;
-                    flag = true;
-                    break;
-                }
-            }
-        }
-        if(!flag)
-        {
-            markers[markerNum[0]].invertIdx[dmatches[i][0].trainIdx].push_back(pair<int, int>(1, i));
-        }
-    }
-    */
+     
+     vector<int> inliers;
+     if(pts3d1_t.size()<15)
+     return false;
+     Solve3D::getCameraRT(KMatrix, pts3d1_t, pts2d1_t, kf.R, kf.t,inliers, false);
+     cout<<kf.R<<kf.t<<endl;
+     for(auto j:inliers)
+     {
+     int i=indices[j];
+     pts3d1.push_back(pts3d1_t[j]);
+     pts2d1.push_back(pts2d1_t[j]);
+     pts3d2.push_back(pts3d2_t[j]);
+     bool flag = false;
+     int tmp,tmpi;
+     kf.indices[i] = pair<int, int>(markerNum, dmatches[i][0].trainIdx);
+     for(int k = 0; k<markers[markerNum].invertIdx[dmatches[i][0].trainIdx].size();k++)
+     {
+     auto &f =markers[markerNum].invertIdx[dmatches[i][0].trainIdx][k];
+     
+     if(f.first == markerNum)
+     {
+     if(dmatches[i][0].distance < dmatches[f.second][0].distance)
+     {
+     f.second = i;
+     flag = true;
+     break;
+     }
+     }
+     }
+     if(!flag)
+     {
+     markers[markerNum].invertIdx[dmatches[i][0].trainIdx].push_back(pair<int, int>(1, i));
+     }
+     }
+     */
     
     if (pts3d1.size()<20) {
         return false;
     }
-    //Mat i1 = kf.img.clone(), i2 = markers[markerNum[0]].img;
+    //Mat i1 = kf.img.clone(), i2 = markers[markerNum].img;
     //for (size_t i = 0; i < pts2d1.size(); i++)
     //{
     //	circle(i1, pts2d1[i], 3, CV_RGB(255, 255, 0));
@@ -542,46 +546,48 @@ bool Feature_Track::setCS(cv::Mat current, cv::Mat marker, vector<int> markerNum
     Solve3D::transformSRT(pts3d2, pts3d3, s, _R, _t);
     
     
-    Solve3D::transformSRT(markers[markerNum[0]].points3D2, markers[markerNum[0]].points3D1, s, _R, _t);
+    Solve3D::transformSRT(markers[markerNum].points3D2, markers[markerNum].points3D1, s, _R, _t);
     
-//    Solve3D::getCameraRT(KMatrix, markers[markerNum[0]].points3D1, mk.pts2D, mk.R, mk.t, inliers, false);
+    //    Solve3D::getCameraRT(KMatrix, markers[markerNum].points3D1, mk.pts2D, mk.R, mk.t, inliers, false);
     
     
-    vector<int> inliers;
     pts3d1.clear();
     for(int i=0;i<indices.size();i++)
     {
-        auto trainIdx =idx[dmatches[i][0].trainIdx];
+        auto trainIdx =kf.idxs[0][dmatches[i][0].trainIdx];
         if(mask.at<char>(i,0))
-            pts3d1.push_back(markers[markerNum[0]].points3D1[trainIdx]);
+            pts3d1.push_back(markers[markerNum].points3D1[trainIdx]);
     }
-    Solve3D::getCameraRT(KMatrix, pts3d1, pts2d1, kf.R, kf.t, inliers, false);
+    Solve3D::getCameraRT(KMatrix, pts3d1, pts2d1, kf.R, kf.t, false);
     cout<<kf.R<<kf.t<<endl;
-    markers[markerNum[0]].registed = true;
-    markers[markerNum[0]].center.x = 0;
-    markers[markerNum[0]].center.y = 0;
-    markers[markerNum[0]].center.z = 0;
+    markers[markerNum].registed = true;
+    markers[markerNum].center.x = 0;
+    markers[markerNum].center.y = 0;
+    markers[markerNum].center.z = 0;
     
-
-    int num = markers[markerNum[0]].points3D1.size();
-    markers[markerNum[0]].center.x /= num;
-    markers[markerNum[0]].center.y /= num;
-    markers[markerNum[0]].center.z /= num;
+    
+    int num = markers[markerNum].points3D1.size();
+    markers[markerNum].center.x /= num;
+    markers[markerNum].center.y /= num;
+    markers[markerNum].center.z /= num;
     
     /*}*/
- //   images.push_back(mk.img.clone());
- //   keyframes.push_back(mk);
+    //   images.push_back(mk.img.clone());
+    //   keyframes.push_back(mk);
+    
     keyframes.push_back(kf);
     images.push_back(current.clone());
     keyFrameNumber = 0;
-//    Solve3D::sba(KMatrix, keyframes, markers);
+    //    Solve3D::sba(KMatrix, keyframes, markers);
     isTracked = false;
+    isfirst = true;
     return true;
+
 }
 /*
 void Feature_Track::setRef(Mat ref,int markerNum,Mat R)
 {
-    
+ 
 	Keyframe kf;
 	kf.img = ref.clone();
     kf.R  = R.clone();
@@ -811,6 +817,12 @@ bool Feature_Track::track(Mat &frame, Mat & C_GL, double &detectfps, double &mat
     static bool isNewMarker = false;
     static int newMarker = -1;
     static Mat R,t;
+    static Keyframe lastFrame;
+    if(isfirst)
+    {
+        lastFrame = keyframes[0];
+        isfirst = false;
+    }
     Keyframe tmp;
     tmp.R = R.clone();
     tmp.t = t.clone();
@@ -835,39 +847,44 @@ bool Feature_Track::track(Mat &frame, Mat & C_GL, double &detectfps, double &mat
     extractor->compute(frame, tmp.keyPoints, tmp.descriptor);
     tm.stop();
     detectfps = 1 / tm.getTimeSec();
-
     
- //   Mat pts3D, pts2D;
+    
+    //   Mat pts3D, pts2D;
     vector<Point3f> pts3d1, pts3d1_t,pts3d2,pts3d2_t;
     vector<Point2f> pts2d1,pts2d1_t,pts2d2,pts2d2_t;
     vector<Point3f> pts3;vector<Point2f> pts2;
     // ◊œ»ªÒ»°µ±«∞πÿº¸÷°µƒmarker–≈œ¢£¨∂‘√ø∏ˆmarker∂ºΩ¯––∆•≈‰£¨ªÒµ√»˝Œ¨µ„∫Õ∂˛Œ¨µ„µƒ¡™œµ
     vector<pair<int,int>> indices;
-    vector<vector<int>> idx(keyframes[keyFrameNumber].markerIdx.size());
-
+    
     tm.reset();
     tm.start();
-    for (int j = 0; j < keyframes[keyFrameNumber].markerIdx.size(); j++)
+    tmp.idxs.resize(lastFrame.markerIdx.size());
+    for (int j = 0; j < lastFrame.markerIdx.size(); j++)
     {
-        int markerNum = keyframes[keyFrameNumber].markerIdx[j];
+        int markerNum = lastFrame.markerIdx[j];
         auto &nowMarker = markers[markerNum];
         if (!nowMarker.registed)
             continue;
-        matcher->knnMatch(tmp.descriptor, nowMarker.descriptor, dmatches, 2);
+        matcher->knnMatch(tmp.descriptor, lastFrame.descriptors[j], dmatches, 2);
         matchfps = 1 / tm.getTimeSec();
         for (int i = 0; i < dmatches.size(); i++)
         {
             tmp.indices.push_back(pair<int, int>(-1, -1));
             if ((dmatches[i][0].distance < dmatches[i][1].distance*0.6) && dmatches[i][0].distance < 90)
             {
-//                indices.push_back(pair<int,int>(markerNum,i));
-                pts3d1_t.push_back(nowMarker.points3D1[dmatches[i][0].trainIdx]);
-                pts2d1_t.push_back(tmp.keyPoints[dmatches[i][0].queryIdx].pt);
-                pts2d2_t.push_back(nowMarker.keypoints[dmatches[i][0].trainIdx].pt);
-//                tmp.indices[i] = pair<int, int>(markerNum, dmatches[i][0].trainIdx);
+                auto trainIdx = lastFrame.idxs[j][dmatches[i][0].trainIdx];
+                if(isClose(tmp.keyPoints[dmatches[i][0].queryIdx].pt,lastFrame.keyPts[j][trainIdx].pt))
+                {
+                    
+                    //                indices.push_back(pair<int,int>(markerNum,i));
+                    pts3d1_t.push_back(nowMarker.points3D1[trainIdx]);
+                    pts2d1_t.push_back(tmp.keyPoints[dmatches[i][0].queryIdx].pt);
+                    pts2d2_t.push_back(nowMarker.keypoints[trainIdx].pt);
+                    //                tmp.indices[i] = pair<int, int>(markerNum, dmatches[i][0].trainIdx);
+                }
             }
         }
-//add for homography
+        //add for homography
         Keyframe warpMarker;
         Mat mask;
         if(pts2d1_t.size()<8)
@@ -896,9 +913,9 @@ bool Feature_Track::track(Mat &frame, Mat & C_GL, double &detectfps, double &mat
         }
         vector<Point3f> pts2d_H;
         vector<Point3f> pts2d_W;
-
+        
         convertPointsToHomogeneous(nowMarker.pts2d, pts2d_H);
-
+        
         for (int i=0; i<nowMarker.pts2d.size(); i++) {
             auto &a = pts2d_H[i];
             double *aa = (double*)H.data;
@@ -908,7 +925,7 @@ bool Feature_Track::track(Mat &frame, Mat & C_GL, double &detectfps, double &mat
             aaa.z = aa[6]*a.x + aa[7]*a.y+aa[8]*a.z;
             pts2d_W.push_back(aaa);
         }
-
+        
         convertPointsFromHomogeneous(pts2d_W, warpMarker.pts2D);
         for (int i=0; i<nowMarker.keypoints.size(); i++) {
             KeyPoint kp;
@@ -924,8 +941,8 @@ bool Feature_Track::track(Mat &frame, Mat & C_GL, double &detectfps, double &mat
             kp.size = nowMarker.keypoints[i].size;
             warpMarker.keyPoints.push_back(kp);
         }
-
-
+        
+        
         foo(warpMarker.img, warpMarker.keyPoints);
         for(int i=0;i<warpMarker.keyPoints.size();i++)
         {
@@ -938,12 +955,13 @@ bool Feature_Track::track(Mat &frame, Mat & C_GL, double &detectfps, double &mat
             const int border_y = warpMarker.img.rows - border;
             if(!RoiPredicate((float)border,(float)border,(float)border_x,(float)border_y,warpMarker.keyPoints[i]))
             {
-                idx[j].push_back(i);
+                tmp.idxs[j].push_back(i);
             }
         }
         extractor->compute(warpMarker.img, warpMarker.keyPoints, warpMarker.descriptor);
         matcher->knnMatch(tmp.descriptor, warpMarker.descriptor, dmatches,2);
-
+        tmp.descriptors.push_back(warpMarker.descriptor);
+        tmp.keyPts.push_back(warpMarker.keyPoints);
         pts2d1_t.clear();
         pts3d2_t.clear();
         pts2d2_t.clear();
@@ -953,12 +971,15 @@ bool Feature_Track::track(Mat &frame, Mat & C_GL, double &detectfps, double &mat
         {
             if ((dmatches[i][0].distance < dmatches[i][1].distance*0.6) && dmatches[i][0].distance < 90)
             {
-                auto trainIdx =idx[j][dmatches[i][0].trainIdx];
-                indices2.push_back(pair<int,int>(j,i));
-                CV_Assert(dmatches[i][0].distance < (0.6*dmatches[i][1].distance));
-                pts2d1_t.push_back(tmp.keyPoints[dmatches[i][0].queryIdx].pt);
-                pts2d2_t.push_back(nowMarker.keypoints[trainIdx].pt);
-                pts3d2_t.push_back(nowMarker.points3D1[trainIdx]);
+                if(isClose(tmp.keyPoints[dmatches[i][0].queryIdx].pt, warpMarker.keyPoints[dmatches[i][0].trainIdx].pt))
+                {
+                    auto trainIdx =tmp.idxs[j][dmatches[i][0].trainIdx];
+                    indices2.push_back(pair<int,int>(j,i));
+                    CV_Assert(dmatches[i][0].distance < (0.6*dmatches[i][1].distance));
+                    pts2d1_t.push_back(tmp.keyPoints[dmatches[i][0].queryIdx].pt);
+                    pts2d2_t.push_back(nowMarker.keypoints[trainIdx].pt);
+                    pts3d2_t.push_back(nowMarker.points3D1[trainIdx]);
+                }
             }
         }
         pts2d2.clear();
@@ -975,8 +996,8 @@ bool Feature_Track::track(Mat &frame, Mat & C_GL, double &detectfps, double &mat
                 indices.push_back(indices2[i]);
                 pts2.push_back(pts2d1_t[i]);
                 pts3.push_back(pts3d2_t[i]);
- //               bool flag = false;
-//                tmp.indices[dmatches[i][0].queryIdx] = pair<int,int>(markerNum,dmatches[i][0].trainIdx);
+                //               bool flag = false;
+                //                tmp.indices[dmatches[i][0].queryIdx] = pair<int,int>(markerNum,dmatches[i][0].trainIdx);
             }
         }
         if(pts3.size()>8)
@@ -1002,7 +1023,7 @@ bool Feature_Track::track(Mat &frame, Mat & C_GL, double &detectfps, double &mat
     cout<<"=-=-="<<tm.getTimeSec()<<endl;
     tm.reset();
     tm.start();
-
+    
     keypointSize = pts3.size();
     if(keypointSize<15)
     {
@@ -1010,8 +1031,8 @@ bool Feature_Track::track(Mat &frame, Mat & C_GL, double &detectfps, double &mat
         return false;
     }
     vector<int> inliers;
-    bool status=Solve3D::getCameraRT(KMatrix, pts3, pts2, tmp.R, tmp.t,inliers,isTracked);
-
+    bool status=Solve3D::getCameraRT(KMatrix, pts3, pts2, tmp.R, tmp.t,isTracked);
+    
     if(!status)
     {
         isTracked = false;
@@ -1022,20 +1043,20 @@ bool Feature_Track::track(Mat &frame, Mat & C_GL, double &detectfps, double &mat
     cout<<tmp.t<<endl;
     pts3d1.clear();
     pts2d2.clear();
-    for(auto j:inliers)
+    for(int j =0;j<pts3.size();j++)
     {
         auto k = indices[j];
         auto markerNum = tmp.markerIdx[k.first];
         int i = k.second;
-        auto trainIdx =idx[k.first][dmatches[i][0].trainIdx];
+        auto trainIdx =tmp.idxs[k.first][dmatches[i][0].trainIdx];
         tmp.indices[i] = pair<int, int>(markerNum, trainIdx);
         pts3d1.push_back(pts3[j]);
         pts2d2.push_back(pts2[j]);
     }
     
-
+    
     //¿˚”√»˝Œ¨µ„∫Õ∂˛Œ¨µ„«ÛΩ‚µ±«∞÷°µƒCamera Pose
-
+    
     
     Mat rvec;
     Rodrigues(tmp.R, rvec);
@@ -1048,10 +1069,10 @@ bool Feature_Track::track(Mat &frame, Mat & C_GL, double &detectfps, double &mat
     }
     err /= pts2d1.size();
     cout<<err<<endl;
-    if(err>3)
+    if(err>20)
     {
         isTracked = false;
-//        return false;
+        //        return false;
     }
     else{
         isTracked = true;
@@ -1094,7 +1115,7 @@ bool Feature_Track::track(Mat &frame, Mat & C_GL, double &detectfps, double &mat
                 if (keyframes[keyFrameNumber].indices[train].first == tmp.indices[query].first&&keyframes[keyFrameNumber].indices[train].second == tmp.indices[query].second&&tmp.indices[query].first == newMarkerNum)
                 {
                     indices.push_back(tmp.indices[query].second);
- //                   marker3DIdx.push_back(tmp.indices[query].second);
+                    //                   marker3DIdx.push_back(tmp.indices[query].second);
                     pts2D1_t.push_back(keyframes[keyFrameNumber].keyPoints[train].pt);
                     pts2D2_t.push_back(tmp.keyPoints[query].pt);
                 }
@@ -1166,7 +1187,7 @@ bool Feature_Track::track(Mat &frame, Mat & C_GL, double &detectfps, double &mat
             minx = std::min<double>(minx,i.x);
             miny = std::min<double>(miny,i.y);
             minz = std::min<double>(minz,i.z);
-
+            
         }
         
         int num = markers[newMarkerNum].points3D1.size();
@@ -1180,126 +1201,126 @@ bool Feature_Track::track(Mat &frame, Mat & C_GL, double &detectfps, double &mat
     if (isKeyFrame(tmp.R, tmp.t,keyFrameNumber))
     {
         //≈–∂œ «∑Òµ±«∞÷°∫¨”––¬µƒmarker–≈œ¢
-        vector<Matches> matches;
-        featureMatch.matchNimages(frame, 2, matches);
-        if (matches[0].count > 100 && matches[1].count > 100)
-        {
-            //»Áπ˚”––¬µƒmarker£¨Œ™–¬µƒmarker«ÛΩ‚µ±«∞◊¯±Íœµµƒ◊¯±Í£¨»ª∫Û«Ûœ‡À∆±‰ªª
-            if (!markers[matches[0].refIdx].registed || !markers[matches[1].refIdx].registed)
-            {
-                int markerIdx = markers[matches[0].refIdx].registed ? matches[1].refIdx : matches[0].refIdx;
-                newMarker = markerIdx;
-                matcher->knnMatch(tmp.descriptor, markers[markerIdx].descriptor, dmatches, 2);
-                int matchCount = 0;
-                pts2d1_t.clear();
-                pts2d2_t.clear();
-                vector<int> indices;
-                for (int i = 0; i < dmatches.size(); i++)
-                {
-                    if ((dmatches[i][0].distance < dmatches[i][1].distance*0.6) && dmatches[i][0].distance < 90)
-                    {
-                        indices.push_back(i);
-                        pts2d1_t.push_back(tmp.keyPoints[dmatches[i][0].trainIdx].pt);
-                        pts2d2_t.push_back(markers[markerIdx].keypoints[i].pt);
-                    }
-                }
-                Mat inliers;
-                if(indices.size()>8)
-                {
-                    findFundamentalMat(pts2d1_t, pts2d2_t,inliers);
-                    for (int j=0; j<inliers.rows; j++)
-                    {
-                        if(inliers.at<char>(j,0))
-                        {
-                            pts2d1.push_back(pts2d1_t[j]);
-                            pts2d2.push_back(pts2d2_t[j]);
-                        //                        int i=indices[j];
-//                        matchCount++;
-                        /*
-                        if (tmp.indices[i].first == -1 && tmp.indices[i].second == -1)
-                        {
-                            tmp.indices[i] = pair<int, int>(markerIdx, dmatches[i][0].trainIdx);
-                        }
-                        */
-                        
-                        }
-                    }
-                    auto & nowMarker = markers[markerIdx];
-                    Mat H = findHomography(pts2d2, pts2d1);
-                    Keyframe warpMarker;
-                    warpPerspective(nowMarker.img, warpMarker.img, H, nowMarker.img.size());
-                    for (int i=0; i<nowMarker.keypoints.size(); i++) {
-                        nowMarker.pts2d.push_back(nowMarker.keypoints[i].pt);
-                    }
-                    vector<Point3f> pts2d_H;
-                    vector<Point3f> pts2d_W;
-                    convertPointsToHomogeneous(nowMarker.pts2d, pts2d_H);
-                    for (int i=0; i<nowMarker.pts2d.size(); i++) {
-                        auto &a = pts2d_H[i];
-                        double *aa = (double*)H.data;
-                        Point3f aaa;
-                        aaa.x = aa[0]*a.x + aa[1]*a.y+aa[2]*a.z;
-                        aaa.y = aa[3]*a.x + aa[4]*a.y+aa[5]*a.z;
-                        aaa.z = aa[6]*a.x + aa[7]*a.y+aa[8]*a.z;
-                        pts2d_W.push_back(aaa);
-                    }
-                    convertPointsFromHomogeneous(pts2d_W, warpMarker.pts2D);
-                    for (int i=0; i<nowMarker.keypoints.size(); i++) {
-                        KeyPoint kp;
-                        auto &pt = warpMarker.pts2D[i];
-                        if(pt.x<0||pt.y<0||pt.x>tmp.img.cols-10||pt.y>tmp.img.rows-10)
-                        {
-                            pt.x = 0;
-                            pt.y = 0;
-                        }
-                        kp.pt = warpMarker.pts2D[i];
-                        kp.octave = nowMarker.keypoints[i].octave;
-                        kp.response = nowMarker.keypoints[i].response;
-                        kp.size = nowMarker.keypoints[i].size;
-                        warpMarker.keyPoints.push_back(kp);
-                    }
-                    foo(warpMarker.img, warpMarker.keyPoints);
-                    vector<int> idx;
-                    for(int i=0;i<warpMarker.keyPoints.size();i++)
-                    {
-                        unsigned int scale = warpMarker.keyPoints[i].octave;
-                        const int sizeList_[8] = {48,59,69,85,99,122,143,168};
-                        // saturate
-                        
-                        const int border = sizeList_[scale];
-                        const int border_x = warpMarker.img.cols - border;
-                        const int border_y = warpMarker.img.rows - border;
-                        if(!RoiPredicate((float)border,(float)border,(float)border_x,(float)border_y,warpMarker.keyPoints[i]))
-                        {
-                            idx.push_back(i);
-                        }
-                    }
-                    extractor->compute(warpMarker.img, warpMarker.keyPoints, warpMarker.descriptor);
-                    matcher->knnMatch(tmp.descriptor, warpMarker.descriptor, dmatches,2);
-                    for (int i = 0; i < dmatches.size(); i++)
-                    {
-                        if ((dmatches[i][0].distance < dmatches[i][1].distance*0.6) && dmatches[i][0].distance < 90)
-                        {
-//                        int i=indices[j];
-                            matchCount++;
-                            auto trainIdx = idx[dmatches[i][0].trainIdx];
-                            if (tmp.indices[i].first == -1 && tmp.indices[i].second == -1)
-                            {
-                                tmp.indices[i] = pair<int, int>(markerIdx, trainIdx);
-                            }
-                        }
-                    }
-                    if (matchCount > 20)
-                    {
-                        tmp.markerIdx.push_back(newMarker);
-                        isNewMarker = true;
-
-                    }
-                    
-
-                }
-            }
-        }
+        //        vector<Matches> matches;
+        //        featureMatch.matchNimages(frame, 2, matches);
+        //        if (matches[0].count > 100 && matches[1].count > 100)
+        //        {
+        //            //»Áπ˚”––¬µƒmarker£¨Œ™–¬µƒmarker«ÛΩ‚µ±«∞◊¯±Íœµµƒ◊¯±Í£¨»ª∫Û«Ûœ‡À∆±‰ªª
+        //            if (!markers[matches[0].refIdx].registed || !markers[matches[1].refIdx].registed)
+        //            {
+        //                int markerIdx = markers[matches[0].refIdx].registed ? matches[1].refIdx : matches[0].refIdx;
+        //                newMarker = markerIdx;
+        //                matcher->knnMatch(tmp.descriptor, markers[markerIdx].descriptor, dmatches, 2);
+        //                int matchCount = 0;
+        //                pts2d1_t.clear();
+        //                pts2d2_t.clear();
+        //                vector<int> indices;
+        //                for (int i = 0; i < dmatches.size(); i++)
+        //                {
+        //                    if ((dmatches[i][0].distance < dmatches[i][1].distance*0.6) && dmatches[i][0].distance < 90)
+        //                    {
+        //                        indices.push_back(i);
+        //                        pts2d1_t.push_back(tmp.keyPoints[dmatches[i][0].trainIdx].pt);
+        //                        pts2d2_t.push_back(markers[markerIdx].keypoints[i].pt);
+        //                    }
+        //                }
+        //                Mat inliers;
+        //                if(indices.size()>8)
+        //                {
+        //                    findFundamentalMat(pts2d1_t, pts2d2_t,inliers);
+        //                    for (int j=0; j<inliers.rows; j++)
+        //                    {
+        //                        if(inliers.at<char>(j,0))
+        //                        {
+        //                            pts2d1.push_back(pts2d1_t[j]);
+        //                            pts2d2.push_back(pts2d2_t[j]);
+        //                        //                        int i=indices[j];
+        ////                        matchCount++;
+        //                        /*
+        //                        if (tmp.indices[i].first == -1 && tmp.indices[i].second == -1)
+        //                        {
+        //                            tmp.indices[i] = pair<int, int>(markerIdx, dmatches[i][0].trainIdx);
+        //                        }
+        //                        */
+        //
+        //                        }
+        //                    }
+        //                    auto & nowMarker = markers[markerIdx];
+        //                    Mat H = findHomography(pts2d2, pts2d1);
+        //                    Keyframe warpMarker;
+        //                    warpPerspective(nowMarker.img, warpMarker.img, H, nowMarker.img.size());
+        //                    for (int i=0; i<nowMarker.keypoints.size(); i++) {
+        //                        nowMarker.pts2d.push_back(nowMarker.keypoints[i].pt);
+        //                    }
+        //                    vector<Point3f> pts2d_H;
+        //                    vector<Point3f> pts2d_W;
+        //                    convertPointsToHomogeneous(nowMarker.pts2d, pts2d_H);
+        //                    for (int i=0; i<nowMarker.pts2d.size(); i++) {
+        //                        auto &a = pts2d_H[i];
+        //                        double *aa = (double*)H.data;
+        //                        Point3f aaa;
+        //                        aaa.x = aa[0]*a.x + aa[1]*a.y+aa[2]*a.z;
+        //                        aaa.y = aa[3]*a.x + aa[4]*a.y+aa[5]*a.z;
+        //                        aaa.z = aa[6]*a.x + aa[7]*a.y+aa[8]*a.z;
+        //                        pts2d_W.push_back(aaa);
+        //                    }
+        //                    convertPointsFromHomogeneous(pts2d_W, warpMarker.pts2D);
+        //                    for (int i=0; i<nowMarker.keypoints.size(); i++) {
+        //                        KeyPoint kp;
+        //                        auto &pt = warpMarker.pts2D[i];
+        //                        if(pt.x<0||pt.y<0||pt.x>tmp.img.cols-10||pt.y>tmp.img.rows-10)
+        //                        {
+        //                            pt.x = 0;
+        //                            pt.y = 0;
+        //                        }
+        //                        kp.pt = warpMarker.pts2D[i];
+        //                        kp.octave = nowMarker.keypoints[i].octave;
+        //                        kp.response = nowMarker.keypoints[i].response;
+        //                        kp.size = nowMarker.keypoints[i].size;
+        //                        warpMarker.keyPoints.push_back(kp);
+        //                    }
+        //                    foo(warpMarker.img, warpMarker.keyPoints);
+        //                    vector<int> idx;
+        //                    for(int i=0;i<warpMarker.keyPoints.size();i++)
+        //                    {
+        //                        unsigned int scale = warpMarker.keyPoints[i].octave;
+        //                        const int sizeList_[8] = {48,59,69,85,99,122,143,168};
+        //                        // saturate
+        //
+        //                        const int border = sizeList_[scale];
+        //                        const int border_x = warpMarker.img.cols - border;
+        //                        const int border_y = warpMarker.img.rows - border;
+        //                        if(!RoiPredicate((float)border,(float)border,(float)border_x,(float)border_y,warpMarker.keyPoints[i]))
+        //                        {
+        //                            idx.push_back(i);
+        //                        }
+        //                    }
+        //                    extractor->compute(warpMarker.img, warpMarker.keyPoints, warpMarker.descriptor);
+        //                    matcher->knnMatch(tmp.descriptor, warpMarker.descriptor, dmatches,2);
+        //                    for (int i = 0; i < dmatches.size(); i++)
+        //                    {
+        //                        if ((dmatches[i][0].distance < dmatches[i][1].distance*0.6) && dmatches[i][0].distance < 90)
+        //                        {
+        ////                        int i=indices[j];
+        //                            matchCount++;
+        //                            auto trainIdx = idx[dmatches[i][0].trainIdx];
+        //                            if (tmp.indices[i].first == -1 && tmp.indices[i].second == -1)
+        //                            {
+        //                                tmp.indices[i] = pair<int, int>(markerIdx, trainIdx);
+        //                            }
+        //                        }
+        //                    }
+        //                    if (matchCount > 20)
+        //                    {
+        //                        tmp.markerIdx.push_back(newMarker);
+        //                        isNewMarker = true;
+        //
+        //                    }
+        //
+        //
+        //                }
+        //            }
+        //        }
         
         for (size_t i = 0; i < tmp.indices.size(); i++)
         {
@@ -1322,21 +1343,21 @@ bool Feature_Track::track(Mat &frame, Mat & C_GL, double &detectfps, double &mat
                     markers[tmp.indices[i].first].invertIdx[tmp.indices[i].second].push_back(pair<int,int>(keyframes.size(), i));
             }
         }
-
+        
         //       Solve3D::get3DPoints(KMatrix, tmp.R, tmp.t, tmp.keyPoints,tmp.pts3D);
         //		cout<<tmp.t<<endl;
         keyframes.push_back(tmp);
-
-        keyFrameNumber = keyframes.size() - 1;
-        images.push_back(frame.clone());
-        assert(images.size() == keyframes.size());
-        if(images.size() == 50)
-            is100 = false;
         
-        if(images.size()%10)
-           Solve3D::sba(KMatrix, keyframes, markers);
-       else
-           Solve3D::sba(KMatrix,keyframes,markers,false);
+        keyFrameNumber = keyframes.size() - 1;
+        //        images.push_back(frame.clone());
+        // //       assert(images.size() == keyframes.size());
+        //        if(images.size() == 50)
+        //            is100 = false;
+        //        
+        //        if(images.size()%10)
+        //           Solve3D::sba(KMatrix, keyframes, markers);
+        //       else
+        //           Solve3D::sba(KMatrix,keyframes,markers,false);
         
         //        cout<<"keyframes numbers"<<keyframes.size()<<endl;
     }
@@ -1346,9 +1367,13 @@ bool Feature_Track::track(Mat &frame, Mat & C_GL, double &detectfps, double &mat
     //    Solve3D::printPlane(KMatrix, tmp.R, tmp.t, frame, lowx, lowy, highx, highy);
     tm.stop();
     cout<<"---"<<tm.getTimeSec()<<endl;
-
+    
     C_GL = Solve3D::getP(tmp.R, tmp.t);
     keyFrameNumber = searchKeyFrame(keyFrameNumber, tmp.R, tmp.t);
+    lastFrame.markerIdx = tmp.markerIdx;
+    lastFrame.keyPts = tmp.keyPts;
+    lastFrame.descriptors = tmp.descriptors;
+    lastFrame.idxs = tmp.idxs;
     //    if(q>=0)
     //    {
     //       keyFrameNumber = q;

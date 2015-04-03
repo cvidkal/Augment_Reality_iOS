@@ -24,7 +24,7 @@ public:
 	void getinvertMatrix();//get (KR)^-1
     static Mat getNextInvertMatrix(Mat KMatrix,Mat R,Mat t);
 	Point3d getNext3DPoint(int i);
-    static bool getCameraRT(Mat KMatrix,vector<Point3f> &P3D,vector<Point2f> &P2D,Mat &R,Mat &t,vector<int> &inliers,bool isTracked);
+    static bool getCameraRT(Mat KMatrix,vector<Point3f> &P3D,vector<Point2f> &P2D,Mat &R,Mat &t,bool isTracked);
 	void getOtherPoints();
 	Mat_<float> TVector;
 	void getRotation(Mat &getRotation);

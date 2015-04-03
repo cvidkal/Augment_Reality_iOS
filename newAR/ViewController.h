@@ -39,6 +39,7 @@ extern double zNear;
     int searchNum;
     bool isTrain;
     future<Mat> backThread;
+    future<bool> trackThread;
     bool isMatched;
     Feature_Track featureTrack;
     bool backgroundIsRun;

@@ -98,7 +98,7 @@ bool drawMatcher(int &keypointSize, int &matchpointSize, Mat &matOutput, double 
                 else
                 {
                     featureTrack.setKMatrix(480, 360, focus);
-                    if(featureTrack.setCS(matOutput, ref, markerNums, IMUR))
+                    if(featureTrack.setCS(matOutput, ref, markerNums[0], IMUR))
                     {
                         isMatched = YES;
 

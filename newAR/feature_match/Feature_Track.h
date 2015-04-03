@@ -17,7 +17,7 @@ public:
     void match(Mat query, Mat train,Matches &matches, double &detectfps, double &matchfps);
 //    bool track(Mat &frame,Mat & C_GL,Mat RIMU,double &detectfps,double &matchfps,int &keypointSize,int &keyframes);
 	void setRef(Mat ref,int markerNum,Mat R);
-    bool setCS(Mat current,Mat marker,vector<int> markerNum,Mat R);
+    bool setCS(Mat current,Mat marker,int markerNum,Mat R);
     bool track(Mat &frame, Mat & C_GL, double &detectfps, double &matchfps, int &keypointSize, int & keyframeCnt,Feature_Match &featureMatch);
     void addMarker(Mat frame,Mat R);
 //    ~Feature_Track(){};
@@ -29,7 +29,7 @@ private:
     int searchKeyFrame(int currentNumber,Mat R,Mat t);
 	Mat KMatrix;
     bool isSet = false;
-
+    bool isfirst;
 	Ptr<FeatureDetector> create_detector(string feature);
 	Ptr<DescriptorExtractor> create_descriptor(string feature);
 
